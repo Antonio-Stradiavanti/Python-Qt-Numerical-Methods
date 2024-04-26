@@ -1,5 +1,6 @@
 {
     "files": [
+        "main.py",
         "widget.py",
         "form.ui",
         "res.qrc"
