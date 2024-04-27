@@ -1,0 +1,35 @@
+QWidget {
+ background: bg_color;
+ background-clip: content;
+ border: 0px;
+} QPushButton {
+ background-color: button_color;
+ color: text_color;
+ border-radius: 24px;
+} QPushButton:hover {
+ background-color: #427B58;
+ color: bg_color;
+} QPushButton:disabled {
+ background-color: input_field_color;
+ color: text_color;
+} QPlainTextEdit {
+ background-color: input_field_color;
+ color: text_color;
+ placeholder-text-color: text_color;
+ border: border_width solid border_color;
+} QLabel {
+ color: {text_color};
+} QTabWidget::pane {
+ border-top: border_width solid border_color;
+ margin-top: -2px;
+} QTabBar::tab {
+ background: bg_color;
+ padding-left: tab_padding; padding-right: tab_padding; padding-bottom: 3px; padding-top: 3px;
+ border-bottom: border_width solid border_color;
+} QTabBar::tab:selected {
+ background: input_field_color;
+ border-bottom: {border_width} solid {selected_tab_border_color};
+} QDoubleSpinBox {
+ background: {input_field_color};
+ border: border_width solid border_color;
+}
