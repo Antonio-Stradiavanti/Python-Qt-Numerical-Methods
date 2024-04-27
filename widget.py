@@ -4,8 +4,12 @@ from NumericDifferentiation import *
 import time
 import sympy as smp
 import re
+import csv
 from sympy import symbols, latex, sympify
-from PySide6.QtWidgets import QWidget, QGroupBox, QHBoxLayout, QVBoxLayout,  QPushButton, QLabel, QPlainTextEdit, QSizePolicy, QSpacerItem
+
+from PySide6.QtWidgets import (
+    QWidget, QPushButton, QLabel, QPlainTextEdit, QFileDialog, QTableWidgetItem
+)
 
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -62,10 +66,21 @@ class Widget(QWidget):
         self.ui.diffTextEdit.setPlaceholderText("""Введите дифференцируемую ф-цию.\nИнформация о используемой системе обозначений: \n\t- exp() -> показательная ф-ция с числом Эйлера в основании;\n\t- ** -> операция возведения в степень;\n\t- * / + - -> операции умножение, деление, сложение и вычитание соответственно.
                    """)
 
+        self.minimusNumberOfValidRecors = 5
+        self.diffTableInputLabel = QLabel(f"! В таблице должно быть не менее {self.minimusNumberOfValidRecors} записей с уникальными значениями независимой переменной.")
+
         self.ui.diffTableWidget.setRowCount(2)
+        self.diffTableInputFieldLabels = ["x", "y"]
+
         self.__on_resetTable_clicked()
-        # funcGroupBoxLayout.addLayout(inputLayout); funcGroupBoxLayout.addLayout(previewLayout)
-        # inputLayout.addWidget(inputFunc)
+
+        tableFunctionLayout = self.ui.tableFunction.layout()
+        tableFunctionLayout.insertWidget(
+            tableFunctionLayout.indexOf(self.ui.diffTableWidget),
+            self.diffTableInputLabel
+        )
+
+        # Сигналы и слоты
         self.ui.table.clicked.connect(self.__on_radioButton_clicked)
         self.ui.symbolic.clicked.connect(self.__on_radioButton_clicked)
 
@@ -77,10 +92,13 @@ class Widget(QWidget):
             lambda: self.ui.diffTableWidget.removeColumn(self.ui.diffTableWidget.columnCount() - 1))
 
         self.ui.diffSaveFuncInput.clicked.connect(self.on_diffFunctionInput)
-        self.ui.diffSaveTableInput.clicked.connect(self.on_diffTableInput)
+        self.ui.diffSaveTableInput.clicked.connect(self.on_diffTableSaveInput)
 
         self.ui.diffTableButton.clicked.connect(self.on_diffButton)
         self.ui.diffSymbolicButton.clicked.connect(self.on_diffButton)
+
+        self.ui.diffTableImportData.clicked.connect(self.__on_importData_clicked)
+        self.ui.diffTableExportData.clicked.connect(self.__on_exportData_clicked)
 
     def __on_symbolicInput(self,  to_display, met):
         # ---
@@ -171,7 +189,7 @@ class Widget(QWidget):
             self.ui.symbolicFunction.setVisible(True)
             self.ui.userEval.setText("M =")
 
-    def on_diffTableInput(self):
+    def on_diffTableSaveInput(self):
     # Отсортировать и удалить дубликаты
         data = dict(); i =0
         while i < self.ui.diffTableWidget.columnCount():
@@ -193,7 +211,8 @@ class Widget(QWidget):
             self.ui.diffTableWidget.item(1, i).setText(str(data[k_i]))
 
         col_count = self.ui.diffTableWidget.columnCount()
-        if col_count < 10:
+
+        if col_count < self.minimusNumberOfValidRecors:
             if col_count == 0 : self.__on_resetTable_clicked()
             else: self.ui.diffTableButton.setEnabled(False)
 
@@ -203,9 +222,79 @@ class Widget(QWidget):
             self.numeric_differentiation.f_x = data
 
     def __on_resetTable_clicked(self):
+        self.diffTableInputLabel.setText(f"! В таблице должно быть не менее {self.minimusNumberOfValidRecors} записей с уникальными значениями независимой переменной.")
         self.ui.diffTableWidget.clear()
+
         self.ui.diffTableWidget.setColumnCount(5)
+        self.ui.diffTableWidget.setVerticalHeaderLabels(self.diffTableInputFieldLabels)
+
         self.ui.diffTableButton.setEnabled(False)
+
+    def __on_importData_clicked(self):
+        filePath = QFileDialog.getOpenFileName(self, "Выберите csv файл для чтения", "",
+        "CSV файлы (*.csv);;Все файлы (*.*)", "", QFileDialog.Option.ReadOnly)
+
+        if len(filePath) == 0:
+            self.diffTableInputLabel.setText("Файл для чтения не выбран")
+            return
+
+        try:
+            with open(filePath[0], newline='', encoding='utf-8') as file:
+
+                my_reader = csv.DictReader(file, fieldnames=self.diffTableInputFieldLabels, delimiter=',')
+                fisrt_row = next(iter(my_reader))
+
+                lx = self.diffTableInputFieldLabels[0]; ly = self.diffTableInputFieldLabels[1]
+                if len(fisrt_row.keys()) == 2 and lx in fisrt_row[lx] and ly in fisrt_row[ly]:
+                    i = 0
+                    self.__on_resetTable_clicked()
+                    for row in my_reader:
+                        if i >= self.ui.diffTableWidget.columnCount():
+                            self.ui.diffTableWidget.insertColumn(i)
+
+                        self.ui.diffTableWidget.setItem(0, i, QTableWidgetItem(row[lx]))
+                        self.ui.diffTableWidget.setItem(1, i, QTableWidgetItem(row[ly]))
+
+                        i+=1
+
+                    self.diffTableInputLabel.setText("Данные успешно загружены из файла " + file.name)
+
+                else:
+                    raise TypeError()
+
+        except OSError:
+            self.diffTableInputLabel.setText("Возникла ошибка при открытии файла: " + file.name + " на "
+                                                                                                                "чтение")
+        except TypeError:
+            self.diffTableInputLabel.setText("Открыт файл некорректного формата, корректные входные данные должны "
+                                             "содержать 2 столбца "
+                                             "x, y")
+        except:
+            self.diffTableInputLabel.setText("Возникла ошибка при работе с файлом: " + file.name)
+
+    def __on_exportData_clicked(self):
+        filePath = QFileDialog.getSaveFileName(self, "Выберите csv файл для записи", "", "CSV файлы (*.csv);;Все файлы (*.*)")
+
+        if len(filePath) == 0:
+            self.diffTableInputLabel.setText("Файл для записи не выбран")
+            return
+
+        try:
+            with open(filePath[0], "w", newline='', encoding='utf-8') as file:
+                my_writer = csv.DictWriter(file, fieldnames=self.diffTableInputFieldLabels)
+
+                my_writer.writeheader()
+
+                ks = self.diffTableInputFieldLabels
+
+                for i in range(self.ui.diffTableWidget.columnCount()):
+                    vls = [self.ui.diffTableWidget.item(j, i).text() for j in range(2)]
+                    my_writer.writerow(dict(zip(ks, vls)))
+
+        except OSError:
+           self.diffTableInputLabel.setText("Возникла ошибка при открытии файла: " + file.name + "на запись")
+        except:
+            self.diffTableInputLabel.setText("Возникла ошибка при работе с файлом: " + file.name)
 
     # Бизнес логика
     def on_integrateButton(self):

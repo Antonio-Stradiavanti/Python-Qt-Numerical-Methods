@@ -460,14 +460,38 @@ class Ui_Widget(object):
 
         self.tableButtons.addWidget(self.removeColumn)
 
+        self.diffTableImportData = QPushButton(self.tableFunction)
+        self.diffTableImportData.setObjectName(u"diffTableImportData")
+        sizePolicy13.setHeightForWidth(self.diffTableImportData.sizePolicy().hasHeightForWidth())
+        self.diffTableImportData.setSizePolicy(sizePolicy13)
+        self.diffTableImportData.setMinimumSize(QSize(55, 55))
+        icon3 = QIcon()
+        icon3.addFile(u":/icons/import.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.diffTableImportData.setIcon(icon3)
+        self.diffTableImportData.setIconSize(QSize(20, 20))
+
+        self.tableButtons.addWidget(self.diffTableImportData)
+
+        self.diffTableExportData = QPushButton(self.tableFunction)
+        self.diffTableExportData.setObjectName(u"diffTableExportData")
+        sizePolicy13.setHeightForWidth(self.diffTableExportData.sizePolicy().hasHeightForWidth())
+        self.diffTableExportData.setSizePolicy(sizePolicy13)
+        self.diffTableExportData.setMinimumSize(QSize(55, 55))
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/export.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.diffTableExportData.setIcon(icon4)
+        self.diffTableExportData.setIconSize(QSize(20, 20))
+
+        self.tableButtons.addWidget(self.diffTableExportData)
+
         self.resetTable = QPushButton(self.tableFunction)
         self.resetTable.setObjectName(u"resetTable")
         sizePolicy14.setHeightForWidth(self.resetTable.sizePolicy().hasHeightForWidth())
         self.resetTable.setSizePolicy(sizePolicy14)
         self.resetTable.setMinimumSize(QSize(55, 55))
-        icon3 = QIcon()
-        icon3.addFile(u":/icons/rotate-ccw.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.resetTable.setIcon(icon3)
+        icon5 = QIcon()
+        icon5.addFile(u":/icons/rotate-ccw.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.resetTable.setIcon(icon5)
         self.resetTable.setIconSize(QSize(20, 20))
 
         self.tableButtons.addWidget(self.resetTable)
@@ -536,7 +560,7 @@ class Ui_Widget(object):
         sizePolicy14.setHeightForWidth(self.resetFunc.sizePolicy().hasHeightForWidth())
         self.resetFunc.setSizePolicy(sizePolicy14)
         self.resetFunc.setMinimumSize(QSize(55, 55))
-        self.resetFunc.setIcon(icon3)
+        self.resetFunc.setIcon(icon5)
         self.resetFunc.setIconSize(QSize(20, 20))
 
         self.diffFuncButtons.addWidget(self.resetFunc)
@@ -616,8 +640,8 @@ class Ui_Widget(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Segoe UI';\"><br /></p></body></html>", None))
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
         self.label_5.setText(QCoreApplication.translate("Widget", u"\u0421\u043e\u0441\u0442\u0430\u0432\u043d\u0430\u044f \u043a\u0432\u0430\u0434\u0440\u0430\u0442\u0443\u0440\u043d\u0430\u044f \u0444\u043e\u0440\u043c\u0443\u043b\u0430 \u0421\u0438\u043c\u043f\u0441\u043e\u043d\u0430 (n=2)", None))
         self.simpRuleOutput.setHtml(QCoreApplication.translate("Widget", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
@@ -625,8 +649,8 @@ class Ui_Widget(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Segoe UI';\"><br /></p></body></html>", None))
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
         self.label_6.setText(QCoreApplication.translate("Widget", u"\u0421\u043e\u0441\u0442\u0430\u0432\u043d\u0430\u044f \u043a\u0432\u0430\u0434\u0440\u0430\u0442\u0443\u0440\u043d\u0430\u044f \u0444\u043e\u0440\u043c\u0443\u043b\u0430 \u041d\u044c\u044e\u0442\u043e\u043d\u0430 (n=3)", None))
         self.newtonRuleOutput.setHtml(QCoreApplication.translate("Widget", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
@@ -634,8 +658,8 @@ class Ui_Widget(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Segoe UI';\">I = 32320,334734; h = 0,443434; t = 12,0343444</span></p></body></html>", None))
+"</style></head><body style=\" font-family:'Segoe UI'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">I = 32320,334734; h = 0,443434; t = 12,0343444</p></body></html>", None))
         self.pushButton_3.setText(QCoreApplication.translate("Widget", u"\u0421\u0431\u0440\u043e\u0441\u0438\u0442\u044c", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.integrateTab), QCoreApplication.translate("Widget", u"Tab 1", None))
         self.numDiffTableOrSymbolic.setTitle(QCoreApplication.translate("Widget", u"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0441\u043f\u043e\u0441\u043e\u0431 \u0437\u0430\u0434\u0430\u043d\u0438\u044f \u0444-\u0446\u0438\u0438", None))
@@ -650,6 +674,8 @@ class Ui_Widget(object):
         self.diffSaveTableInput.setText("")
         self.addColumn.setText("")
         self.removeColumn.setText("")
+        self.diffTableImportData.setText("")
+        self.diffTableExportData.setText("")
         self.resetTable.setText("")
         self.diffTableButton.setText(QCoreApplication.translate("Widget", u"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u044c \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u043d\u0443\u044e", None))
         self.diffTextEdit.setPlaceholderText("")

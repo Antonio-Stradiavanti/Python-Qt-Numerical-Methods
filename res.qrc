@@ -4,5 +4,7 @@
         <file>plus.svg</file>
         <file>rotate-ccw.svg</file>
         <file>save.svg</file>
+        <file>export.svg</file>
+        <file>import.svg</file>
     </qresource>
 </RCC>
