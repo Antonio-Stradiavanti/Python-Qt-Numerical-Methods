@@ -363,24 +363,38 @@ class Ui_Widget(object):
         self.groupBox = QGroupBox(self.diffTab)
         self.groupBox.setObjectName(u"groupBox")
         self.horizontalLayout_7 = QHBoxLayout(self.groupBox)
-        self.horizontalLayout_7.setSpacing(12)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.userEval = QLabel(self.groupBox)
-        self.userEval.setObjectName(u"userEval")
+        self.diffEvalPoint_label = QLabel(self.groupBox)
+        self.diffEvalPoint_label.setObjectName(u"diffEvalPoint_label")
         sizePolicy10 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
         sizePolicy10.setHorizontalStretch(0)
         sizePolicy10.setVerticalStretch(0)
-        sizePolicy10.setHeightForWidth(self.userEval.sizePolicy().hasHeightForWidth())
-        self.userEval.setSizePolicy(sizePolicy10)
-        self.userEval.setFont(font1)
+        sizePolicy10.setHeightForWidth(self.diffEvalPoint_label.sizePolicy().hasHeightForWidth())
+        self.diffEvalPoint_label.setSizePolicy(sizePolicy10)
+        self.diffEvalPoint_label.setFont(font1)
 
-        self.horizontalLayout_7.addWidget(self.userEval)
+        self.horizontalLayout_7.addWidget(self.diffEvalPoint_label)
 
-        self.diffCloseness = QDoubleSpinBox(self.groupBox)
-        self.diffCloseness.setObjectName(u"diffCloseness")
+        self.diffEvalPoint = QDoubleSpinBox(self.groupBox)
+        self.diffEvalPoint.setObjectName(u"diffEvalPoint")
         sizePolicy11 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy11.setHorizontalStretch(0)
         sizePolicy11.setVerticalStretch(0)
+        sizePolicy11.setHeightForWidth(self.diffEvalPoint.sizePolicy().hasHeightForWidth())
+        self.diffEvalPoint.setSizePolicy(sizePolicy11)
+
+        self.horizontalLayout_7.addWidget(self.diffEvalPoint)
+
+        self.diffCloseness_label = QLabel(self.groupBox)
+        self.diffCloseness_label.setObjectName(u"diffCloseness_label")
+        sizePolicy10.setHeightForWidth(self.diffCloseness_label.sizePolicy().hasHeightForWidth())
+        self.diffCloseness_label.setSizePolicy(sizePolicy10)
+        self.diffCloseness_label.setFont(font1)
+
+        self.horizontalLayout_7.addWidget(self.diffCloseness_label)
+
+        self.diffCloseness = QDoubleSpinBox(self.groupBox)
+        self.diffCloseness.setObjectName(u"diffCloseness")
         sizePolicy11.setHeightForWidth(self.diffCloseness.sizePolicy().hasHeightForWidth())
         self.diffCloseness.setSizePolicy(sizePolicy11)
 
@@ -593,16 +607,16 @@ class Ui_Widget(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setVerticalSpacing(5)
         self.gridLayout.setContentsMargins(9, 3, 9, 9)
-        self.webEngine_2 = QWebEngineView(self.numDiffOutput)
-        self.webEngine_2.setObjectName(u"webEngine_2")
+        self.diffOutput = QWebEngineView(self.numDiffOutput)
+        self.diffOutput.setObjectName(u"diffOutput")
         sizePolicy16 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy16.setHorizontalStretch(0)
         sizePolicy16.setVerticalStretch(0)
-        sizePolicy16.setHeightForWidth(self.webEngine_2.sizePolicy().hasHeightForWidth())
-        self.webEngine_2.setSizePolicy(sizePolicy16)
-        self.webEngine_2.setMinimumSize(QSize(0, 89))
+        sizePolicy16.setHeightForWidth(self.diffOutput.sizePolicy().hasHeightForWidth())
+        self.diffOutput.setSizePolicy(sizePolicy16)
+        self.diffOutput.setMinimumSize(QSize(0, 89))
 
-        self.gridLayout.addWidget(self.webEngine_2, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.diffOutput, 0, 0, 1, 1)
 
 
         self.verticalLayout_4.addWidget(self.numDiffOutput)
@@ -640,8 +654,8 @@ class Ui_Widget(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Segoe UI';\"><br /></p></body></html>", None))
         self.label_5.setText(QCoreApplication.translate("Widget", u"\u0421\u043e\u0441\u0442\u0430\u0432\u043d\u0430\u044f \u043a\u0432\u0430\u0434\u0440\u0430\u0442\u0443\u0440\u043d\u0430\u044f \u0444\u043e\u0440\u043c\u0443\u043b\u0430 \u0421\u0438\u043c\u043f\u0441\u043e\u043d\u0430 (n=2)", None))
         self.simpRuleOutput.setHtml(QCoreApplication.translate("Widget", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
@@ -649,8 +663,8 @@ class Ui_Widget(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Segoe UI';\"><br /></p></body></html>", None))
         self.label_6.setText(QCoreApplication.translate("Widget", u"\u0421\u043e\u0441\u0442\u0430\u0432\u043d\u0430\u044f \u043a\u0432\u0430\u0434\u0440\u0430\u0442\u0443\u0440\u043d\u0430\u044f \u0444\u043e\u0440\u043c\u0443\u043b\u0430 \u041d\u044c\u044e\u0442\u043e\u043d\u0430 (n=3)", None))
         self.newtonRuleOutput.setHtml(QCoreApplication.translate("Widget", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
@@ -658,8 +672,8 @@ class Ui_Widget(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">I = 32320,334734; h = 0,443434; t = 12,0343444</p></body></html>", None))
+"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Segoe UI';\">I = 32320,334734; h = 0,443434; t = 12,0343444</span></p></body></html>", None))
         self.pushButton_3.setText(QCoreApplication.translate("Widget", u"\u0421\u0431\u0440\u043e\u0441\u0438\u0442\u044c", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.integrateTab), QCoreApplication.translate("Widget", u"Tab 1", None))
         self.numDiffTableOrSymbolic.setTitle(QCoreApplication.translate("Widget", u"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0441\u043f\u043e\u0441\u043e\u0431 \u0437\u0430\u0434\u0430\u043d\u0438\u044f \u0444-\u0446\u0438\u0438", None))
@@ -668,8 +682,9 @@ class Ui_Widget(object):
         self.groupBox_2.setTitle(QCoreApplication.translate("Widget", u"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043f\u043e\u0440\u044f\u0434\u043e\u043a \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u043d\u043e\u0439", None))
         self.diffOrd1.setText(QCoreApplication.translate("Widget", u"1-\u0439", None))
         self.diffOrd2.setText(QCoreApplication.translate("Widget", u"2-\u0439", None))
-        self.groupBox.setTitle(QCoreApplication.translate("Widget", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043e\u0446\u0435\u043d\u043a\u0443 \u0442\u043e\u0447\u043d\u043e\u0441\u0442\u0438", None))
-        self.userEval.setText(QCoreApplication.translate("Widget", u"M =", None))
+        self.groupBox.setTitle(QCoreApplication.translate("Widget", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0442\u043e\u0447\u043a\u0443 x \u0438 \u043e\u0446\u0435\u043d\u043a\u0443 \u0442\u043e\u0447\u043d\u043e\u0441\u0442\u0438 M", None))
+        self.diffEvalPoint_label.setText(QCoreApplication.translate("Widget", u"x =", None))
+        self.diffCloseness_label.setText(QCoreApplication.translate("Widget", u"M =", None))
         self.funcGroupBox.setTitle(QCoreApplication.translate("Widget", u"\u0417\u0430\u0434\u0430\u0439\u0442\u0435 \u0434\u0438\u0444\u0444\u0435\u0440\u0435\u043d\u0446\u0438\u0440\u0443\u0435\u043c\u0443\u044e \u0444-\u0446\u0438\u044e", None))
         self.diffSaveTableInput.setText("")
         self.addColumn.setText("")

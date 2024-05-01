@@ -205,20 +205,25 @@ class Widget(QWidget):
 
         data = {k: data[k] for k in sorted(data.keys())}
 
-        for i in range(self.ui.diffTableWidget.columnCount()):
-            k_i = list(data.keys())[i]
-            self.ui.diffTableWidget.item(0, i).setText(str(k_i))
-            self.ui.diffTableWidget.item(1, i).setText(str(data[k_i]))
+        j = 0
+        for i in data.keys():
+            self.ui.diffTableWidget.item(0, j).setText(str(i))
+            self.ui.diffTableWidget.item(1, j).setText(str(data[i]))
+            j+=1
 
         col_count = self.ui.diffTableWidget.columnCount()
 
         if col_count < self.minimusNumberOfValidRecors:
             if col_count == 0 : self.__on_resetTable_clicked()
-            else: self.ui.diffTableButton.setEnabled(False)
+            else:
+                self.ui.diffTableButton.setEnabled(False)
+                self.ui.diffTableExportData.setEnabled(False)
 
             self.numeric_differentiation.f_x = None
         else:
             self.ui.diffTableButton.setEnabled(True)
+            self.ui.diffTableExportData.setEnabled(True)
+
             self.numeric_differentiation.f_x = data
 
     def __on_resetTable_clicked(self):
@@ -229,6 +234,7 @@ class Widget(QWidget):
         self.ui.diffTableWidget.setVerticalHeaderLabels(self.diffTableInputFieldLabels)
 
         self.ui.diffTableButton.setEnabled(False)
+        self.ui.diffTableExportData.setEnabled(False)
 
     def __on_importData_clicked(self):
         filePath = QFileDialog.getOpenFileName(self, "Выберите csv файл для чтения", "",
@@ -315,7 +321,31 @@ class Widget(QWidget):
             field.setText(f"I = {res[0].evalf(6)}; δ = {res[1].evalf(6)}; t = {round((t1-t0)*1000, 6)}мс")
 
     def on_diffButton(self):
-        ...
+
+        if self.ui.symbolic.isChecked():
+            if self.ui.diffOrd1.isChecked(): order = 1
+            else: order = 2
+            res = self.numeric_differentiation.symbolic_function(self.ui.diffCloseness.value(), order, self.ui.diffEvalPoint.value())
+        else:
+            res = self.numeric_differentiation.table_function()
+
+        self.ui.diffOutput.setHtml(f"""
+                    <html>
+                        <head>
+                            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+                            </script>
+                        </head>
+                        <body>
+                            <p>
+                                <mathjax style="font-size:1.5em">
+                                    \\frac{{df}}{{dx}} = {res[0]}; \ \\epsilon = {res[1]}; \ g(h) = {res[2]}
+                                </mathjax>
+                            </p>
+                        </body>
+                    </html>""")
+
+
+
 
     def on_reset(self):
         for field in [self.ui.trapRuleOutput, self.ui.simpRuleOutput, self.ui.newtonRuleOutput]:

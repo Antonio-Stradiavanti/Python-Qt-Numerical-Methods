@@ -6,7 +6,8 @@ class NumericMethod(Enum):
 class NumericOperation:
     def __init__(self):
         self.__eps = None
-        self.__f_x = None; self.__x = symbols('x')
+        self.__f_x = None
+        self.x = symbols('x')
 
     @property
     def f_x(self):
