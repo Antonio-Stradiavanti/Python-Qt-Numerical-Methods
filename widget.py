@@ -1,11 +1,13 @@
 # This Python file uses the following encoding: utf-8
 from NumericIntegration import *
 from NumericDifferentiation import *
+from UnlinearEquationSolver import *
+
 import time
 import sympy as smp
 import re
 import csv
-from sympy import symbols, latex, sympify
+from sympy import symbols, latex, sympify, log, sqrt
 
 from PySide6.QtWidgets import (
     QWidget, QPushButton, QLabel, QPlainTextEdit, QFileDialog, QTableWidgetItem
@@ -26,15 +28,21 @@ class Widget(QWidget):
         self.setWindowTitle("Калькулятор производных и интегралов")
         self.ui.tabWidget.setTabText(0, "Численное интегрирование")
         self.ui.tabWidget.setTabText(1, "Численное дифференцирование")
+        self.ui.tabWidget.setTabText(2, "Решение нелинейных уравнений")
         self.ui.output.setVisible(False)
 
         # --- Свойства
         self.numeric_integration = NumericIntegration()
         self.numeric_differentiation = NumericDifferentiation()
+
+        self.solver1 = UnlinearEquationSolver()
+        self.solver2 = UnlinearEquationSolver()
+        self.solver3 = UnlinearEquationSolver()
         # --- Конфигурация вкладок управления
 
-        self.__initIntegrateTab()
-        self.__initDiffTab()
+        self.__init_integrateTab()
+        self.__init_diffTab()
+        self.__init_solverTab()
 
         # --- Раскрашиваем элементы управления
         #     """.format(
@@ -47,7 +55,7 @@ class Widget(QWidget):
         #self.ui.saveInputButton.clicked.connect(self.__handleSymbolicInput)
 
 
-    def __initIntegrateTab(self):
+    def __init_integrateTab(self):
         self.ui.integrateButton.setEnabled(False)
 
         self.ui.integrateTextEdit.setPlaceholderText("""Введите подынтегральную ф-цию.\nИнформация о используемой системе обозначений: \n\t- exp() -> показательная ф-ция с числом Эйлера в основании;\n\t- ** -> операция возведения в степень;\n\t- * / + - -> операции умножение, деление, сложение и вычитание соответственно.
@@ -56,7 +64,7 @@ class Widget(QWidget):
         self.ui.integrateButton.clicked.connect(self.on_reset)
         self.ui.integrateSaveFunc.clicked.connect(self.on_integrandInput)
 
-    def __initDiffTab(self):
+    def __init_diffTab(self):
         self.ui.tableFunction.setVisible(False)
 
         self.ui.diffTableButton.setEnabled(False)
@@ -99,6 +107,28 @@ class Widget(QWidget):
 
         self.ui.diffTableImportData.clicked.connect(self.__on_importData_clicked)
         self.ui.diffTableExportData.clicked.connect(self.__on_exportData_clicked)
+
+    def __init_solverTab(self):
+        self.ui.solver_output.setVisible(False)
+        solver_methods = ["Метод дихотомии", "Метод хорд", "Метод Ньютона", "Метод секущих", "Гибридный метод Ньютона-половинного деления"]
+
+
+        self.ui.solver_methodComboBox_1.addItems(solver_methods)
+        self.ui.solver_methodComboBox_2.addItems(solver_methods)
+        self.ui.solver_methodComboBox_3.addItems(solver_methods)
+
+        self.ui.splitter.setStretchFactor(0, 1)
+        self.ui.splitter.setStretchFactor(1, 2)
+        self.ui.splitter.setStretchFactor(2, 1)
+
+        self.ui.solver_plainTextEdit_1.setPlainText("4 * x * log(x) ** 2 - 4 * sqrt(1 + x) + 5 = 0")
+
+        self.ui.solver_solve.setEnabled(False)
+
+    def __diffResetEvalPointConstraints(self):
+        self.ui.diffEvalPoint.setMinimum(-100000)
+        self.ui.diffEvalPoint.setMaximum(100000)
+        self.ui.diffEvalPoint.setValue(0)
 
     def __on_symbolicInput(self,  to_display, met):
         # ---
@@ -176,24 +206,29 @@ class Widget(QWidget):
 
         self.__on_symbolicInput(latex_derivative, NumericMethod.DIFFERENTIATION)
 
+
+
+
     # Обработка табличного ввода
 
 
     def __on_radioButton_clicked(self):
+        self.__on_resetTable_clicked()
+
         if self.ui.table.isChecked() :
             self.ui.tableFunction.setVisible(True)
             self.ui.symbolicFunction.setVisible(False)
-            self.ui.userEval.setText("ε =")
+            self.ui.diffCloseness_label.setText("ε =")
         else:
             self.ui.tableFunction.setVisible(False)
             self.ui.symbolicFunction.setVisible(True)
-            self.ui.userEval.setText("M =")
+            self.ui.diffCloseness_label.setText("M =")
 
     def on_diffTableSaveInput(self):
     # Отсортировать и удалить дубликаты
-        data = dict(); i =0
+        data = dict(); i = 0
         while i < self.ui.diffTableWidget.columnCount():
-            it0 = self.ui.diffTableWidget.item(0, i); it1 =  self.ui.diffTableWidget.item(1, i)
+            it0 = self.ui.diffTableWidget.item(0, i); it1 = self.ui.diffTableWidget.item(1, i)
             try:
                 if it0 is not None and it1 is not None :
                     data[float(it0.text())] = float(it1.text())
@@ -213,20 +248,38 @@ class Widget(QWidget):
 
         col_count = self.ui.diffTableWidget.columnCount()
 
-        if col_count < self.minimusNumberOfValidRecors:
-            if col_count == 0 : self.__on_resetTable_clicked()
+        try:
+            if col_count < self.minimusNumberOfValidRecors:
+                if col_count == 0 : self.__on_resetTable_clicked()
+                else:
+                    self.diffTableInputLabel.setText("Заданная сетка содержит недостаточное количество узлов")
+                    raise ValueError
+
             else:
-                self.ui.diffTableButton.setEnabled(False)
-                self.ui.diffTableExportData.setEnabled(False)
+                data_keys = list(data.keys())
+                d = data_keys[1] - data_keys[0]
 
-            self.numeric_differentiation.f_x = None
-        else:
-            self.ui.diffTableButton.setEnabled(True)
-            self.ui.diffTableExportData.setEnabled(True)
+                if any(data_keys[i + 1] - data_keys[i] != d for i in range(len(data_keys) - 1)):
+                    self.diffTableInputLabel.setText("Заданная сетка не является равномерной")
+                    raise ValueError
+                else:
+                    self.ui.diffTableButton.setEnabled(True)
+                    self.ui.diffTableExportData.setEnabled(True)
 
-            self.numeric_differentiation.f_x = data
+                    self.ui.diffEvalPoint.setMinimum(data_keys[0])
+                    self.ui.diffEvalPoint.setMaximum(data_keys[-1])
+                    self.ui.diffEvalPoint.setValue(data_keys[2])
+
+                    self.numeric_differentiation.f_x = data
+                    self.numeric_differentiation.h_0 = d
+
+        except ValueError:
+            self.ui.diffTableButton.setEnabled(False)
+            self.ui.diffTableExportData.setEnabled(False)
 
     def __on_resetTable_clicked(self):
+        self.__diffResetEvalPointConstraints()
+
         self.diffTableInputLabel.setText(f"! В таблице должно быть не менее {self.minimusNumberOfValidRecors} записей с уникальными значениями независимой переменной.")
         self.ui.diffTableWidget.clear()
 
@@ -321,13 +374,14 @@ class Widget(QWidget):
             field.setText(f"I = {res[0].evalf(6)}; δ = {res[1].evalf(6)}; t = {round((t1-t0)*1000, 6)}мс")
 
     def on_diffButton(self):
+        x0 = self.ui.diffEvalPoint.value()
+        if self.ui.diffOrd1.isChecked(): order = 1
+        else: order = 2
 
         if self.ui.symbolic.isChecked():
-            if self.ui.diffOrd1.isChecked(): order = 1
-            else: order = 2
-            res = self.numeric_differentiation.symbolic_function(self.ui.diffCloseness.value(), order, self.ui.diffEvalPoint.value())
+            res = self.numeric_differentiation.symbolic_function(x0, order, self.ui.diffCloseness.value())
         else:
-            res = self.numeric_differentiation.table_function()
+            res = self.numeric_differentiation.table_function(x0, order)
 
         self.ui.diffOutput.setHtml(f"""
                     <html>
@@ -338,13 +392,11 @@ class Widget(QWidget):
                         <body>
                             <p>
                                 <mathjax style="font-size:1.5em">
-                                    \\frac{{df}}{{dx}} = {res[0]}; \ \\epsilon = {res[1]}; \ g(h) = {res[2]}
+                                    $$\\frac{{df}}{{dx}} = {round(res[0], 6)}; \ \\epsilon = {round(res[1], 6)}; \ g(h) = {res[2]}$$
                                 </mathjax>
                             </p>
                         </body>
                     </html>""")
-
-
 
 
     def on_reset(self):
@@ -354,3 +406,30 @@ class Widget(QWidget):
         self.ui.showInput.setVisible(True)
         self.ui.integrateButton.setEnabled(False)
         self.ui.diffWebEngine.setHtml("")
+
+
+    def on_solveButton(self):
+
+        def run_method(met, solver):
+            match met:
+                case "Метод дихотомии":
+
+
+                case "Метод хорд":
+                    ...
+                case "Метод Ньютона":
+                    ...
+                case "Метод секущих":
+                    ...
+                case "Гибридный метод Ньютона-половинного деления":
+                    ...
+
+        if not len(self.ui.solver_plainTextEdit_1.text()) or not len(self.ui.solver_plainTextEdit_2.text()) or not len(self.ui.solver_plainTextEdit_3.text()):
+            self.ui.solver_solve.setEnabled(False)
+            return
+
+        mets = [self.ui.solver_methodComboBox_1.currentText(), self.ui.solver_methodComboBox_2.currentText(), self.ui.solver_methodComboBox_3.currentText()]
+        flag = False
+
+
+
