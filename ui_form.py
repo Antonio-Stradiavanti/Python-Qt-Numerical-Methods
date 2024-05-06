@@ -16,11 +16,12 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import (QApplication, QDoubleSpinBox, QGridLayout, QGroupBox,
-    QHBoxLayout, QHeaderView, QLabel, QPlainTextEdit,
-    QPushButton, QRadioButton, QSizePolicy, QSpacerItem,
-    QTabWidget, QTableWidget, QTableWidgetItem, QTextEdit,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QDoubleSpinBox, QGridLayout,
+    QGroupBox, QHBoxLayout, QHeaderView, QLabel,
+    QPlainTextEdit, QPushButton, QRadioButton, QScrollArea,
+    QSizePolicy, QSpacerItem, QSplitter, QTabWidget,
+    QTableWidget, QTableWidgetItem, QTextEdit, QVBoxLayout,
+    QWidget)
 import res_rc
 
 class Ui_Widget(object):
@@ -30,9 +31,10 @@ class Ui_Widget(object):
         Widget.resize(1347, 482)
         Widget.setMinimumSize(QSize(732, 482))
         Widget.setMaximumSize(QSize(2000, 500))
-        self.horizontalLayout_2 = QHBoxLayout(Widget)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_13 = QHBoxLayout(Widget)
+        self.horizontalLayout_13.setSpacing(12)
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
         self.tabWidget = QTabWidget(Widget)
         self.tabWidget.setObjectName(u"tabWidget")
         font = QFont()
@@ -43,7 +45,7 @@ class Ui_Widget(object):
         self.horizontalLayout_3 = QHBoxLayout(self.integrateTab)
         self.horizontalLayout_3.setSpacing(12)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.horizontalLayout_3.setContentsMargins(12, 0, 12, 0)
+        self.horizontalLayout_3.setContentsMargins(6, 0, 6, 6)
         self.input = QGroupBox(self.integrateTab)
         self.input.setObjectName(u"input")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
@@ -363,26 +365,50 @@ class Ui_Widget(object):
         self.groupBox = QGroupBox(self.diffTab)
         self.groupBox.setObjectName(u"groupBox")
         self.horizontalLayout_7 = QHBoxLayout(self.groupBox)
-        self.horizontalLayout_7.setSpacing(12)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.userEval = QLabel(self.groupBox)
-        self.userEval.setObjectName(u"userEval")
+        self.diffEvalPoint_label = QLabel(self.groupBox)
+        self.diffEvalPoint_label.setObjectName(u"diffEvalPoint_label")
         sizePolicy10 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
         sizePolicy10.setHorizontalStretch(0)
         sizePolicy10.setVerticalStretch(0)
-        sizePolicy10.setHeightForWidth(self.userEval.sizePolicy().hasHeightForWidth())
-        self.userEval.setSizePolicy(sizePolicy10)
-        self.userEval.setFont(font1)
+        sizePolicy10.setHeightForWidth(self.diffEvalPoint_label.sizePolicy().hasHeightForWidth())
+        self.diffEvalPoint_label.setSizePolicy(sizePolicy10)
+        self.diffEvalPoint_label.setFont(font1)
 
-        self.horizontalLayout_7.addWidget(self.userEval)
+        self.horizontalLayout_7.addWidget(self.diffEvalPoint_label)
 
-        self.diffCloseness = QDoubleSpinBox(self.groupBox)
-        self.diffCloseness.setObjectName(u"diffCloseness")
+        self.diffEvalPoint = QDoubleSpinBox(self.groupBox)
+        self.diffEvalPoint.setObjectName(u"diffEvalPoint")
         sizePolicy11 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy11.setHorizontalStretch(0)
         sizePolicy11.setVerticalStretch(0)
+        sizePolicy11.setHeightForWidth(self.diffEvalPoint.sizePolicy().hasHeightForWidth())
+        self.diffEvalPoint.setSizePolicy(sizePolicy11)
+        self.diffEvalPoint.setDecimals(4)
+        self.diffEvalPoint.setMinimum(-100000.000000000000000)
+        self.diffEvalPoint.setMaximum(100000.000000000000000)
+        self.diffEvalPoint.setSingleStep(0.000100000000000)
+        self.diffEvalPoint.setValue(0.000000000000000)
+
+        self.horizontalLayout_7.addWidget(self.diffEvalPoint)
+
+        self.diffCloseness_label = QLabel(self.groupBox)
+        self.diffCloseness_label.setObjectName(u"diffCloseness_label")
+        sizePolicy10.setHeightForWidth(self.diffCloseness_label.sizePolicy().hasHeightForWidth())
+        self.diffCloseness_label.setSizePolicy(sizePolicy10)
+        self.diffCloseness_label.setFont(font1)
+
+        self.horizontalLayout_7.addWidget(self.diffCloseness_label)
+
+        self.diffCloseness = QDoubleSpinBox(self.groupBox)
+        self.diffCloseness.setObjectName(u"diffCloseness")
         sizePolicy11.setHeightForWidth(self.diffCloseness.sizePolicy().hasHeightForWidth())
         self.diffCloseness.setSizePolicy(sizePolicy11)
+        self.diffCloseness.setDecimals(4)
+        self.diffCloseness.setMinimum(-1000.000000000000000)
+        self.diffCloseness.setMaximum(1000.000000000000000)
+        self.diffCloseness.setSingleStep(0.000100000000000)
+        self.diffCloseness.setValue(0.000100000000000)
 
         self.horizontalLayout_7.addWidget(self.diffCloseness)
 
@@ -593,28 +619,487 @@ class Ui_Widget(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setVerticalSpacing(5)
         self.gridLayout.setContentsMargins(9, 3, 9, 9)
-        self.webEngine_2 = QWebEngineView(self.numDiffOutput)
-        self.webEngine_2.setObjectName(u"webEngine_2")
+        self.diffOutput = QWebEngineView(self.numDiffOutput)
+        self.diffOutput.setObjectName(u"diffOutput")
         sizePolicy16 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy16.setHorizontalStretch(0)
         sizePolicy16.setVerticalStretch(0)
-        sizePolicy16.setHeightForWidth(self.webEngine_2.sizePolicy().hasHeightForWidth())
-        self.webEngine_2.setSizePolicy(sizePolicy16)
-        self.webEngine_2.setMinimumSize(QSize(0, 89))
+        sizePolicy16.setHeightForWidth(self.diffOutput.sizePolicy().hasHeightForWidth())
+        self.diffOutput.setSizePolicy(sizePolicy16)
+        self.diffOutput.setMinimumSize(QSize(0, 89))
 
-        self.gridLayout.addWidget(self.webEngine_2, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.diffOutput, 0, 0, 1, 1)
 
 
         self.verticalLayout_4.addWidget(self.numDiffOutput)
 
         self.tabWidget.addTab(self.diffTab, "")
+        self.solveUnlinearEquationTab = QWidget()
+        self.solveUnlinearEquationTab.setObjectName(u"solveUnlinearEquationTab")
+        self.horizontalLayout_2 = QHBoxLayout(self.solveUnlinearEquationTab)
+        self.horizontalLayout_2.setSpacing(12)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(6, 0, 6, 6)
+        self.splitter = QSplitter(self.solveUnlinearEquationTab)
+        self.splitter.setObjectName(u"splitter")
+        self.splitter.setOrientation(Qt.Horizontal)
+        self.splitter.setHandleWidth(0)
+        self.solver_input = QGroupBox(self.splitter)
+        self.solver_input.setObjectName(u"solver_input")
+        self.verticalLayout_8 = QVBoxLayout(self.solver_input)
+        self.verticalLayout_8.setSpacing(6)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalLayout_8.setContentsMargins(6, 3, 6, 3)
+        self.scrollArea = QScrollArea(self.solver_input)
+        self.scrollArea.setObjectName(u"scrollArea")
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, -130, 545, 495))
+        self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
+        self.verticalLayout_10.setContentsMargins(0, 0, 0, 0)
+        self.solver_equation_1 = QGroupBox(self.scrollAreaWidgetContents)
+        self.solver_equation_1.setObjectName(u"solver_equation_1")
+        self.verticalLayout_5 = QVBoxLayout(self.solver_equation_1)
+        self.verticalLayout_5.setSpacing(3)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_5.setContentsMargins(6, 3, 6, 3)
+        self.solver_plainTextEdit_1 = QPlainTextEdit(self.solver_equation_1)
+        self.solver_plainTextEdit_1.setObjectName(u"solver_plainTextEdit_1")
+        sizePolicy9.setHeightForWidth(self.solver_plainTextEdit_1.sizePolicy().hasHeightForWidth())
+        self.solver_plainTextEdit_1.setSizePolicy(sizePolicy9)
+        self.solver_plainTextEdit_1.setReadOnly(True)
 
-        self.horizontalLayout_2.addWidget(self.tabWidget)
+        self.verticalLayout_5.addWidget(self.solver_plainTextEdit_1)
+
+        self.solver_method_1 = QHBoxLayout()
+        self.solver_method_1.setObjectName(u"solver_method_1")
+        self.solver_method_label = QLabel(self.solver_equation_1)
+        self.solver_method_label.setObjectName(u"solver_method_label")
+
+        self.solver_method_1.addWidget(self.solver_method_label)
+
+        self.solver_methodComboBox_1 = QComboBox(self.solver_equation_1)
+        self.solver_methodComboBox_1.setObjectName(u"solver_methodComboBox_1")
+        sizePolicy9.setHeightForWidth(self.solver_methodComboBox_1.sizePolicy().hasHeightForWidth())
+        self.solver_methodComboBox_1.setSizePolicy(sizePolicy9)
+
+        self.solver_method_1.addWidget(self.solver_methodComboBox_1)
+
+        self.solver_method_1.setStretch(0, 1)
+        self.solver_method_1.setStretch(1, 2)
+
+        self.verticalLayout_5.addLayout(self.solver_method_1)
+
+        self.horizontalLayout_10 = QHBoxLayout()
+        self.horizontalLayout_10.setSpacing(12)
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.solver_aLayout = QHBoxLayout()
+        self.solver_aLayout.setSpacing(12)
+        self.solver_aLayout.setObjectName(u"solver_aLayout")
+        self.solver_aLabel = QLabel(self.solver_equation_1)
+        self.solver_aLabel.setObjectName(u"solver_aLabel")
+        self.solver_aLabel.setFont(font)
+
+        self.solver_aLayout.addWidget(self.solver_aLabel)
+
+        self.solver_aSpinBox = QDoubleSpinBox(self.solver_equation_1)
+        self.solver_aSpinBox.setObjectName(u"solver_aSpinBox")
+        sizePolicy10.setHeightForWidth(self.solver_aSpinBox.sizePolicy().hasHeightForWidth())
+        self.solver_aSpinBox.setSizePolicy(sizePolicy10)
+        self.solver_aSpinBox.setDecimals(6)
+        self.solver_aSpinBox.setMaximum(1000000000.000000000000000)
+
+        self.solver_aLayout.addWidget(self.solver_aSpinBox)
+
+
+        self.horizontalLayout_10.addLayout(self.solver_aLayout)
+
+        self.solver_bLayout_1 = QHBoxLayout()
+        self.solver_bLayout_1.setSpacing(12)
+        self.solver_bLayout_1.setObjectName(u"solver_bLayout_1")
+        self.solver_bLabel_1 = QLabel(self.solver_equation_1)
+        self.solver_bLabel_1.setObjectName(u"solver_bLabel_1")
+        self.solver_bLabel_1.setFont(font)
+
+        self.solver_bLayout_1.addWidget(self.solver_bLabel_1)
+
+        self.solver_bSpinBox_1 = QDoubleSpinBox(self.solver_equation_1)
+        self.solver_bSpinBox_1.setObjectName(u"solver_bSpinBox_1")
+        sizePolicy10.setHeightForWidth(self.solver_bSpinBox_1.sizePolicy().hasHeightForWidth())
+        self.solver_bSpinBox_1.setSizePolicy(sizePolicy10)
+        self.solver_bSpinBox_1.setDecimals(6)
+        self.solver_bSpinBox_1.setMaximum(1000000000.000000000000000)
+        self.solver_bSpinBox_1.setValue(10.000000000000000)
+
+        self.solver_bLayout_1.addWidget(self.solver_bSpinBox_1)
+
+
+        self.horizontalLayout_10.addLayout(self.solver_bLayout_1)
+
+        self.solver_epsLayout_1 = QHBoxLayout()
+        self.solver_epsLayout_1.setSpacing(12)
+        self.solver_epsLayout_1.setObjectName(u"solver_epsLayout_1")
+        self.solver_epsLabel_1 = QLabel(self.solver_equation_1)
+        self.solver_epsLabel_1.setObjectName(u"solver_epsLabel_1")
+        self.solver_epsLabel_1.setFont(font)
+
+        self.solver_epsLayout_1.addWidget(self.solver_epsLabel_1)
+
+        self.solver_epsSpinBox_1 = QDoubleSpinBox(self.solver_equation_1)
+        self.solver_epsSpinBox_1.setObjectName(u"solver_epsSpinBox_1")
+        sizePolicy10.setHeightForWidth(self.solver_epsSpinBox_1.sizePolicy().hasHeightForWidth())
+        self.solver_epsSpinBox_1.setSizePolicy(sizePolicy10)
+        self.solver_epsSpinBox_1.setDecimals(6)
+        self.solver_epsSpinBox_1.setMinimum(0.000001000000000)
+        self.solver_epsSpinBox_1.setMaximum(0.001000000000000)
+        self.solver_epsSpinBox_1.setSingleStep(0.000001000000000)
+
+        self.solver_epsLayout_1.addWidget(self.solver_epsSpinBox_1)
+
+
+        self.horizontalLayout_10.addLayout(self.solver_epsLayout_1)
+
+
+        self.verticalLayout_5.addLayout(self.horizontalLayout_10)
+
+        self.verticalLayout_5.setStretch(0, 21)
+        self.verticalLayout_5.setStretch(1, 1)
+
+        self.verticalLayout_10.addWidget(self.solver_equation_1)
+
+        self.solver_equation_2 = QGroupBox(self.scrollAreaWidgetContents)
+        self.solver_equation_2.setObjectName(u"solver_equation_2")
+        self.verticalLayout_6 = QVBoxLayout(self.solver_equation_2)
+        self.verticalLayout_6.setSpacing(3)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(6, 3, 6, 3)
+        self.solver_plainTextEdit_2 = QPlainTextEdit(self.solver_equation_2)
+        self.solver_plainTextEdit_2.setObjectName(u"solver_plainTextEdit_2")
+        sizePolicy9.setHeightForWidth(self.solver_plainTextEdit_2.sizePolicy().hasHeightForWidth())
+        self.solver_plainTextEdit_2.setSizePolicy(sizePolicy9)
+
+        self.verticalLayout_6.addWidget(self.solver_plainTextEdit_2)
+
+        self.solver_method_2 = QHBoxLayout()
+        self.solver_method_2.setObjectName(u"solver_method_2")
+        self.solver_method_label_2 = QLabel(self.solver_equation_2)
+        self.solver_method_label_2.setObjectName(u"solver_method_label_2")
+
+        self.solver_method_2.addWidget(self.solver_method_label_2)
+
+        self.solver_methodComboBox_2 = QComboBox(self.solver_equation_2)
+        self.solver_methodComboBox_2.setObjectName(u"solver_methodComboBox_2")
+        sizePolicy9.setHeightForWidth(self.solver_methodComboBox_2.sizePolicy().hasHeightForWidth())
+        self.solver_methodComboBox_2.setSizePolicy(sizePolicy9)
+
+        self.solver_method_2.addWidget(self.solver_methodComboBox_2)
+
+        self.solver_method_2.setStretch(0, 1)
+        self.solver_method_2.setStretch(1, 2)
+
+        self.verticalLayout_6.addLayout(self.solver_method_2)
+
+        self.horizontalLayout_11 = QHBoxLayout()
+        self.horizontalLayout_11.setSpacing(12)
+        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
+        self.solver_aLayout_2 = QHBoxLayout()
+        self.solver_aLayout_2.setSpacing(12)
+        self.solver_aLayout_2.setObjectName(u"solver_aLayout_2")
+        self.solver_aLabel_2 = QLabel(self.solver_equation_2)
+        self.solver_aLabel_2.setObjectName(u"solver_aLabel_2")
+        self.solver_aLabel_2.setFont(font)
+
+        self.solver_aLayout_2.addWidget(self.solver_aLabel_2)
+
+        self.solver_aSpinBox_2 = QDoubleSpinBox(self.solver_equation_2)
+        self.solver_aSpinBox_2.setObjectName(u"solver_aSpinBox_2")
+        sizePolicy10.setHeightForWidth(self.solver_aSpinBox_2.sizePolicy().hasHeightForWidth())
+        self.solver_aSpinBox_2.setSizePolicy(sizePolicy10)
+        self.solver_aSpinBox_2.setDecimals(6)
+        self.solver_aSpinBox_2.setMaximum(1000000000.000000000000000)
+
+        self.solver_aLayout_2.addWidget(self.solver_aSpinBox_2)
+
+
+        self.horizontalLayout_11.addLayout(self.solver_aLayout_2)
+
+        self.solver_bLayout_2 = QHBoxLayout()
+        self.solver_bLayout_2.setSpacing(12)
+        self.solver_bLayout_2.setObjectName(u"solver_bLayout_2")
+        self.solver_bLabel_2 = QLabel(self.solver_equation_2)
+        self.solver_bLabel_2.setObjectName(u"solver_bLabel_2")
+        self.solver_bLabel_2.setFont(font)
+
+        self.solver_bLayout_2.addWidget(self.solver_bLabel_2)
+
+        self.solver_bSpinBox_2 = QDoubleSpinBox(self.solver_equation_2)
+        self.solver_bSpinBox_2.setObjectName(u"solver_bSpinBox_2")
+        sizePolicy10.setHeightForWidth(self.solver_bSpinBox_2.sizePolicy().hasHeightForWidth())
+        self.solver_bSpinBox_2.setSizePolicy(sizePolicy10)
+        self.solver_bSpinBox_2.setDecimals(6)
+        self.solver_bSpinBox_2.setMaximum(1000000000.000000000000000)
+        self.solver_bSpinBox_2.setValue(10.000000000000000)
+
+        self.solver_bLayout_2.addWidget(self.solver_bSpinBox_2)
+
+
+        self.horizontalLayout_11.addLayout(self.solver_bLayout_2)
+
+        self.solver_epsLayout_2 = QHBoxLayout()
+        self.solver_epsLayout_2.setSpacing(12)
+        self.solver_epsLayout_2.setObjectName(u"solver_epsLayout_2")
+        self.solver_epsLabel_2 = QLabel(self.solver_equation_2)
+        self.solver_epsLabel_2.setObjectName(u"solver_epsLabel_2")
+        self.solver_epsLabel_2.setFont(font)
+
+        self.solver_epsLayout_2.addWidget(self.solver_epsLabel_2)
+
+        self.solver_epsSpinBox_2 = QDoubleSpinBox(self.solver_equation_2)
+        self.solver_epsSpinBox_2.setObjectName(u"solver_epsSpinBox_2")
+        sizePolicy10.setHeightForWidth(self.solver_epsSpinBox_2.sizePolicy().hasHeightForWidth())
+        self.solver_epsSpinBox_2.setSizePolicy(sizePolicy10)
+        self.solver_epsSpinBox_2.setDecimals(6)
+        self.solver_epsSpinBox_2.setMinimum(0.000001000000000)
+        self.solver_epsSpinBox_2.setMaximum(0.001000000000000)
+        self.solver_epsSpinBox_2.setSingleStep(0.000001000000000)
+
+        self.solver_epsLayout_2.addWidget(self.solver_epsSpinBox_2)
+
+
+        self.horizontalLayout_11.addLayout(self.solver_epsLayout_2)
+
+
+        self.verticalLayout_6.addLayout(self.horizontalLayout_11)
+
+        self.verticalLayout_6.setStretch(0, 21)
+        self.verticalLayout_6.setStretch(1, 1)
+
+        self.verticalLayout_10.addWidget(self.solver_equation_2)
+
+        self.solver_equation_3 = QGroupBox(self.scrollAreaWidgetContents)
+        self.solver_equation_3.setObjectName(u"solver_equation_3")
+        self.verticalLayout_7 = QVBoxLayout(self.solver_equation_3)
+        self.verticalLayout_7.setSpacing(3)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.verticalLayout_7.setContentsMargins(6, 3, 6, 3)
+        self.solver_plainTextEdit_3 = QPlainTextEdit(self.solver_equation_3)
+        self.solver_plainTextEdit_3.setObjectName(u"solver_plainTextEdit_3")
+        sizePolicy9.setHeightForWidth(self.solver_plainTextEdit_3.sizePolicy().hasHeightForWidth())
+        self.solver_plainTextEdit_3.setSizePolicy(sizePolicy9)
+
+        self.verticalLayout_7.addWidget(self.solver_plainTextEdit_3)
+
+        self.solver_method_3 = QHBoxLayout()
+        self.solver_method_3.setObjectName(u"solver_method_3")
+        self.solver_method_label_3 = QLabel(self.solver_equation_3)
+        self.solver_method_label_3.setObjectName(u"solver_method_label_3")
+
+        self.solver_method_3.addWidget(self.solver_method_label_3)
+
+        self.solver_methodComboBox_3 = QComboBox(self.solver_equation_3)
+        self.solver_methodComboBox_3.setObjectName(u"solver_methodComboBox_3")
+        sizePolicy9.setHeightForWidth(self.solver_methodComboBox_3.sizePolicy().hasHeightForWidth())
+        self.solver_methodComboBox_3.setSizePolicy(sizePolicy9)
+
+        self.solver_method_3.addWidget(self.solver_methodComboBox_3)
+
+        self.solver_method_3.setStretch(0, 1)
+        self.solver_method_3.setStretch(1, 2)
+
+        self.verticalLayout_7.addLayout(self.solver_method_3)
+
+        self.horizontalLayout_12 = QHBoxLayout()
+        self.horizontalLayout_12.setSpacing(12)
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.solver_aLayout_3 = QHBoxLayout()
+        self.solver_aLayout_3.setSpacing(12)
+        self.solver_aLayout_3.setObjectName(u"solver_aLayout_3")
+        self.solver_aLabel_3 = QLabel(self.solver_equation_3)
+        self.solver_aLabel_3.setObjectName(u"solver_aLabel_3")
+        self.solver_aLabel_3.setFont(font)
+
+        self.solver_aLayout_3.addWidget(self.solver_aLabel_3)
+
+        self.solver_aSpinBox_3 = QDoubleSpinBox(self.solver_equation_3)
+        self.solver_aSpinBox_3.setObjectName(u"solver_aSpinBox_3")
+        sizePolicy10.setHeightForWidth(self.solver_aSpinBox_3.sizePolicy().hasHeightForWidth())
+        self.solver_aSpinBox_3.setSizePolicy(sizePolicy10)
+        self.solver_aSpinBox_3.setDecimals(6)
+        self.solver_aSpinBox_3.setMaximum(1000000000.000000000000000)
+
+        self.solver_aLayout_3.addWidget(self.solver_aSpinBox_3)
+
+
+        self.horizontalLayout_12.addLayout(self.solver_aLayout_3)
+
+        self.solver_bLayout_3 = QHBoxLayout()
+        self.solver_bLayout_3.setSpacing(12)
+        self.solver_bLayout_3.setObjectName(u"solver_bLayout_3")
+        self.solver_bLabel_3 = QLabel(self.solver_equation_3)
+        self.solver_bLabel_3.setObjectName(u"solver_bLabel_3")
+        self.solver_bLabel_3.setFont(font)
+
+        self.solver_bLayout_3.addWidget(self.solver_bLabel_3)
+
+        self.solver_bSpinBox_3 = QDoubleSpinBox(self.solver_equation_3)
+        self.solver_bSpinBox_3.setObjectName(u"solver_bSpinBox_3")
+        sizePolicy10.setHeightForWidth(self.solver_bSpinBox_3.sizePolicy().hasHeightForWidth())
+        self.solver_bSpinBox_3.setSizePolicy(sizePolicy10)
+        self.solver_bSpinBox_3.setDecimals(6)
+        self.solver_bSpinBox_3.setMaximum(1000000000.000000000000000)
+        self.solver_bSpinBox_3.setValue(10.000000000000000)
+
+        self.solver_bLayout_3.addWidget(self.solver_bSpinBox_3)
+
+
+        self.horizontalLayout_12.addLayout(self.solver_bLayout_3)
+
+        self.solver_epsLayout_3 = QHBoxLayout()
+        self.solver_epsLayout_3.setSpacing(12)
+        self.solver_epsLayout_3.setObjectName(u"solver_epsLayout_3")
+        self.solver_epsLabel_3 = QLabel(self.solver_equation_3)
+        self.solver_epsLabel_3.setObjectName(u"solver_epsLabel_3")
+        self.solver_epsLabel_3.setFont(font)
+
+        self.solver_epsLayout_3.addWidget(self.solver_epsLabel_3)
+
+        self.solver_epsSpinBox_3 = QDoubleSpinBox(self.solver_equation_3)
+        self.solver_epsSpinBox_3.setObjectName(u"solver_epsSpinBox_3")
+        sizePolicy10.setHeightForWidth(self.solver_epsSpinBox_3.sizePolicy().hasHeightForWidth())
+        self.solver_epsSpinBox_3.setSizePolicy(sizePolicy10)
+        self.solver_epsSpinBox_3.setDecimals(6)
+        self.solver_epsSpinBox_3.setMinimum(0.000001000000000)
+        self.solver_epsSpinBox_3.setMaximum(0.001000000000000)
+        self.solver_epsSpinBox_3.setSingleStep(0.000001000000000)
+
+        self.solver_epsLayout_3.addWidget(self.solver_epsSpinBox_3)
+
+
+        self.horizontalLayout_12.addLayout(self.solver_epsLayout_3)
+
+
+        self.verticalLayout_7.addLayout(self.horizontalLayout_12)
+
+        self.verticalLayout_7.setStretch(0, 21)
+        self.verticalLayout_7.setStretch(1, 1)
+
+        self.verticalLayout_10.addWidget(self.solver_equation_3)
+
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+
+        self.verticalLayout_8.addWidget(self.scrollArea)
+
+        self.pushButton_2 = QPushButton(self.solver_input)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+        sizePolicy4.setHeightForWidth(self.pushButton_2.sizePolicy().hasHeightForWidth())
+        self.pushButton_2.setSizePolicy(sizePolicy4)
+        self.pushButton_2.setMinimumSize(QSize(0, 55))
+
+        self.verticalLayout_8.addWidget(self.pushButton_2)
+
+        self.splitter.addWidget(self.solver_input)
+        self.solver_inputSaved = QGroupBox(self.splitter)
+        self.solver_inputSaved.setObjectName(u"solver_inputSaved")
+        sizePolicy5.setHeightForWidth(self.solver_inputSaved.sizePolicy().hasHeightForWidth())
+        self.solver_inputSaved.setSizePolicy(sizePolicy5)
+        self.verticalLayout_9 = QVBoxLayout(self.solver_inputSaved)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.verticalLayout_9.setContentsMargins(6, 3, 6, 3)
+        self.solverWebEngine = QWebEngineView(self.solver_inputSaved)
+        self.solverWebEngine.setObjectName(u"solverWebEngine")
+        sizePolicy15.setHeightForWidth(self.solverWebEngine.sizePolicy().hasHeightForWidth())
+        self.solverWebEngine.setSizePolicy(sizePolicy15)
+
+        self.verticalLayout_9.addWidget(self.solverWebEngine)
+
+        self.solver_solve = QPushButton(self.solver_inputSaved)
+        self.solver_solve.setObjectName(u"solver_solve")
+        sizePolicy4.setHeightForWidth(self.solver_solve.sizePolicy().hasHeightForWidth())
+        self.solver_solve.setSizePolicy(sizePolicy4)
+        self.solver_solve.setMinimumSize(QSize(0, 55))
+
+        self.verticalLayout_9.addWidget(self.solver_solve)
+
+        self.splitter.addWidget(self.solver_inputSaved)
+        self.solver_output = QGroupBox(self.splitter)
+        self.solver_output.setObjectName(u"solver_output")
+        self.verticalLayout_14 = QVBoxLayout(self.solver_output)
+        self.verticalLayout_14.setSpacing(6)
+        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
+        self.verticalLayout_14.setContentsMargins(6, 3, 6, 6)
+        self.solver_equationOutput_groupBox_1 = QGroupBox(self.solver_output)
+        self.solver_equationOutput_groupBox_1.setObjectName(u"solver_equationOutput_groupBox_1")
+        self.verticalLayout_11 = QVBoxLayout(self.solver_equationOutput_groupBox_1)
+        self.verticalLayout_11.setObjectName(u"verticalLayout_11")
+        self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
+        self.solver_equationOutput_1 = QWebEngineView(self.solver_equationOutput_groupBox_1)
+        self.solver_equationOutput_1.setObjectName(u"solver_equationOutput_1")
+        sizePolicy16.setHeightForWidth(self.solver_equationOutput_1.sizePolicy().hasHeightForWidth())
+        self.solver_equationOutput_1.setSizePolicy(sizePolicy16)
+        self.solver_equationOutput_1.setMinimumSize(QSize(0, 89))
+
+        self.verticalLayout_11.addWidget(self.solver_equationOutput_1)
+
+
+        self.verticalLayout_14.addWidget(self.solver_equationOutput_groupBox_1)
+
+        self.solver_equationOutput_groupBox_2 = QGroupBox(self.solver_output)
+        self.solver_equationOutput_groupBox_2.setObjectName(u"solver_equationOutput_groupBox_2")
+        self.verticalLayout_12 = QVBoxLayout(self.solver_equationOutput_groupBox_2)
+        self.verticalLayout_12.setObjectName(u"verticalLayout_12")
+        self.verticalLayout_12.setContentsMargins(0, 0, 0, 0)
+        self.solver_equationOutput_2 = QWebEngineView(self.solver_equationOutput_groupBox_2)
+        self.solver_equationOutput_2.setObjectName(u"solver_equationOutput_2")
+        sizePolicy16.setHeightForWidth(self.solver_equationOutput_2.sizePolicy().hasHeightForWidth())
+        self.solver_equationOutput_2.setSizePolicy(sizePolicy16)
+        self.solver_equationOutput_2.setMinimumSize(QSize(0, 89))
+
+        self.verticalLayout_12.addWidget(self.solver_equationOutput_2)
+
+
+        self.verticalLayout_14.addWidget(self.solver_equationOutput_groupBox_2)
+
+        self.solver_equationOutput_groupBox_3 = QGroupBox(self.solver_output)
+        self.solver_equationOutput_groupBox_3.setObjectName(u"solver_equationOutput_groupBox_3")
+        self.verticalLayout_13 = QVBoxLayout(self.solver_equationOutput_groupBox_3)
+        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.solver_equationOutput_3 = QWebEngineView(self.solver_equationOutput_groupBox_3)
+        self.solver_equationOutput_3.setObjectName(u"solver_equationOutput_3")
+        sizePolicy16.setHeightForWidth(self.solver_equationOutput_3.sizePolicy().hasHeightForWidth())
+        self.solver_equationOutput_3.setSizePolicy(sizePolicy16)
+        self.solver_equationOutput_3.setMinimumSize(QSize(0, 89))
+
+        self.verticalLayout_13.addWidget(self.solver_equationOutput_3)
+
+
+        self.verticalLayout_14.addWidget(self.solver_equationOutput_groupBox_3)
+
+        self.solver_resetButton = QPushButton(self.solver_output)
+        self.solver_resetButton.setObjectName(u"solver_resetButton")
+        sizePolicy8.setHeightForWidth(self.solver_resetButton.sizePolicy().hasHeightForWidth())
+        self.solver_resetButton.setSizePolicy(sizePolicy8)
+        self.solver_resetButton.setMinimumSize(QSize(360, 55))
+        self.solver_resetButton.setMaximumSize(QSize(16777215, 55))
+        self.solver_resetButton.setFont(font)
+        self.solver_resetButton.setIconSize(QSize(16, 16))
+
+        self.verticalLayout_14.addWidget(self.solver_resetButton)
+
+        self.splitter.addWidget(self.solver_output)
+
+        self.horizontalLayout_2.addWidget(self.splitter)
+
+        self.tabWidget.addTab(self.solveUnlinearEquationTab, "")
+
+        self.horizontalLayout_13.addWidget(self.tabWidget)
 
 
         self.retranslateUi(Widget)
 
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(Widget)
@@ -640,8 +1125,8 @@ class Ui_Widget(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Segoe UI';\"><br /></p></body></html>", None))
         self.label_5.setText(QCoreApplication.translate("Widget", u"\u0421\u043e\u0441\u0442\u0430\u0432\u043d\u0430\u044f \u043a\u0432\u0430\u0434\u0440\u0430\u0442\u0443\u0440\u043d\u0430\u044f \u0444\u043e\u0440\u043c\u0443\u043b\u0430 \u0421\u0438\u043c\u043f\u0441\u043e\u043d\u0430 (n=2)", None))
         self.simpRuleOutput.setHtml(QCoreApplication.translate("Widget", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
@@ -649,8 +1134,8 @@ class Ui_Widget(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Segoe UI';\"><br /></p></body></html>", None))
         self.label_6.setText(QCoreApplication.translate("Widget", u"\u0421\u043e\u0441\u0442\u0430\u0432\u043d\u0430\u044f \u043a\u0432\u0430\u0434\u0440\u0430\u0442\u0443\u0440\u043d\u0430\u044f \u0444\u043e\u0440\u043c\u0443\u043b\u0430 \u041d\u044c\u044e\u0442\u043e\u043d\u0430 (n=3)", None))
         self.newtonRuleOutput.setHtml(QCoreApplication.translate("Widget", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
@@ -658,8 +1143,8 @@ class Ui_Widget(object):
 "hr { height: 1px; border-width: 0; }\n"
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
-"</style></head><body style=\" font-family:'Segoe UI'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">I = 32320,334734; h = 0,443434; t = 12,0343444</p></body></html>", None))
+"</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Segoe UI';\">I = 32320,334734; h = 0,443434; t = 12,0343444</span></p></body></html>", None))
         self.pushButton_3.setText(QCoreApplication.translate("Widget", u"\u0421\u0431\u0440\u043e\u0441\u0438\u0442\u044c", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.integrateTab), QCoreApplication.translate("Widget", u"Tab 1", None))
         self.numDiffTableOrSymbolic.setTitle(QCoreApplication.translate("Widget", u"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0441\u043f\u043e\u0441\u043e\u0431 \u0437\u0430\u0434\u0430\u043d\u0438\u044f \u0444-\u0446\u0438\u0438", None))
@@ -668,8 +1153,9 @@ class Ui_Widget(object):
         self.groupBox_2.setTitle(QCoreApplication.translate("Widget", u"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043f\u043e\u0440\u044f\u0434\u043e\u043a \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u043d\u043e\u0439", None))
         self.diffOrd1.setText(QCoreApplication.translate("Widget", u"1-\u0439", None))
         self.diffOrd2.setText(QCoreApplication.translate("Widget", u"2-\u0439", None))
-        self.groupBox.setTitle(QCoreApplication.translate("Widget", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043e\u0446\u0435\u043d\u043a\u0443 \u0442\u043e\u0447\u043d\u043e\u0441\u0442\u0438", None))
-        self.userEval.setText(QCoreApplication.translate("Widget", u"M =", None))
+        self.groupBox.setTitle(QCoreApplication.translate("Widget", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0442\u043e\u0447\u043a\u0443 x \u0438 \u043e\u0446\u0435\u043d\u043a\u0443 \u0442\u043e\u0447\u043d\u043e\u0441\u0442\u0438 M", None))
+        self.diffEvalPoint_label.setText(QCoreApplication.translate("Widget", u"x =", None))
+        self.diffCloseness_label.setText(QCoreApplication.translate("Widget", u"M =", None))
         self.funcGroupBox.setTitle(QCoreApplication.translate("Widget", u"\u0417\u0430\u0434\u0430\u0439\u0442\u0435 \u0434\u0438\u0444\u0444\u0435\u0440\u0435\u043d\u0446\u0438\u0440\u0443\u0435\u043c\u0443\u044e \u0444-\u0446\u0438\u044e", None))
         self.diffSaveTableInput.setText("")
         self.addColumn.setText("")
@@ -684,5 +1170,30 @@ class Ui_Widget(object):
         self.diffSymbolicButton.setText(QCoreApplication.translate("Widget", u"\u0412\u044b\u0447\u0438\u0441\u043b\u0438\u0442\u044c \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u043d\u0443\u044e", None))
         self.numDiffOutput.setTitle(QCoreApplication.translate("Widget", u"\u0412\u044b\u0445\u043e\u0434\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.diffTab), QCoreApplication.translate("Widget", u"Tab 2", None))
+        self.solver_input.setTitle(QCoreApplication.translate("Widget", u"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0432\u0445\u043e\u0434\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435", None))
+        self.solver_equation_1.setTitle(QCoreApplication.translate("Widget", u"\u0423\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 1", None))
+        self.solver_method_label.setText(QCoreApplication.translate("Widget", u"\u041c\u0435\u0442\u043e\u0434 \u0440\u0435\u0448\u0435\u043d\u0438\u044f", None))
+        self.solver_aLabel.setText(QCoreApplication.translate("Widget", u"a =", None))
+        self.solver_bLabel_1.setText(QCoreApplication.translate("Widget", u"b =", None))
+        self.solver_epsLabel_1.setText(QCoreApplication.translate("Widget", u"\u03b5 =", None))
+        self.solver_equation_2.setTitle(QCoreApplication.translate("Widget", u"\u0423\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 2", None))
+        self.solver_method_label_2.setText(QCoreApplication.translate("Widget", u"\u041c\u0435\u0442\u043e\u0434 \u0440\u0435\u0448\u0435\u043d\u0438\u044f", None))
+        self.solver_aLabel_2.setText(QCoreApplication.translate("Widget", u"a =", None))
+        self.solver_bLabel_2.setText(QCoreApplication.translate("Widget", u"b =", None))
+        self.solver_epsLabel_2.setText(QCoreApplication.translate("Widget", u"\u03b5 =", None))
+        self.solver_equation_3.setTitle(QCoreApplication.translate("Widget", u"\u0423\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 3", None))
+        self.solver_method_label_3.setText(QCoreApplication.translate("Widget", u"\u041c\u0435\u0442\u043e\u0434 \u0440\u0435\u0448\u0435\u043d\u0438\u044f", None))
+        self.solver_aLabel_3.setText(QCoreApplication.translate("Widget", u"a =", None))
+        self.solver_bLabel_3.setText(QCoreApplication.translate("Widget", u"b =", None))
+        self.solver_epsLabel_3.setText(QCoreApplication.translate("Widget", u"\u03b5 =", None))
+        self.pushButton_2.setText(QCoreApplication.translate("Widget", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
+        self.solver_inputSaved.setTitle(QCoreApplication.translate("Widget", u"\u0412\u0445\u043e\u0434\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435", None))
+        self.solver_solve.setText(QCoreApplication.translate("Widget", u"\u041d\u0430\u0439\u0442\u0438 \u043a\u043e\u0440\u043d\u0438 \u0437\u0430\u0434\u0430\u043d\u043d\u044b\u0445 \u0443\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0439", None))
+        self.solver_output.setTitle(QCoreApplication.translate("Widget", u"\u0412\u044b\u0445\u043e\u0434\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435", None))
+        self.solver_equationOutput_groupBox_1.setTitle(QCoreApplication.translate("Widget", u"\u0423\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 1", None))
+        self.solver_equationOutput_groupBox_2.setTitle(QCoreApplication.translate("Widget", u"\u0423\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 2", None))
+        self.solver_equationOutput_groupBox_3.setTitle(QCoreApplication.translate("Widget", u"\u0423\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435 3", None))
+        self.solver_resetButton.setText(QCoreApplication.translate("Widget", u"\u0421\u0431\u0440\u043e\u0441\u0438\u0442\u044c", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.solveUnlinearEquationTab), QCoreApplication.translate("Widget", u"Page", None))
     # retranslateUi
 

@@ -4,9 +4,10 @@ class NumericMethod(Enum):
     INTEGRATION = 1
     DIFFERENTIATION = 2
 class NumericOperation:
+    x = symbols('x')
     def __init__(self):
         self.__eps = None
-        self.__f_x = None; self.__x = symbols('x')
+        self.__f_x = None
 
     @property
     def f_x(self):
