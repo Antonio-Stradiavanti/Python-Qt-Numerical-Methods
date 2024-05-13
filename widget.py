@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 from NumericIntegration import *
 from NumericDifferentiation import *
-from UnlinearEquationSolver import *
+from NonlinearEquationSolver import *
 
 import time
 import sympy as smp
@@ -34,10 +34,9 @@ class Widget(QWidget):
         # --- Свойства
         self.numeric_integration = NumericIntegration()
         self.numeric_differentiation = NumericDifferentiation()
+        self.nonlinear_equation_solvers = [NonlinearEquationSolver(), NonlinearEquationSolver(), NonlinearEquationSolver()]
 
-        self.solver1 = UnlinearEquationSolver()
-        self.solver2 = UnlinearEquationSolver()
-        self.solver3 = UnlinearEquationSolver()
+        self.placeHolder = "\n\t- exp() ➡️ показательная ф-ция с числом Эйлера в основании;\n\t- ** ➡️ операция возведения в степень;\n\t- * / + - ➡️ операции умножение, деление, сложение и вычитание соответственно."
         # --- Конфигурация вкладок управления
 
         self.__init_integrateTab()
@@ -58,8 +57,7 @@ class Widget(QWidget):
     def __init_integrateTab(self):
         self.ui.integrateButton.setEnabled(False)
 
-        self.ui.integrateTextEdit.setPlaceholderText("""Введите подынтегральную ф-цию.\nИнформация о используемой системе обозначений: \n\t- exp() -> показательная ф-ция с числом Эйлера в основании;\n\t- ** -> операция возведения в степень;\n\t- * / + - -> операции умножение, деление, сложение и вычитание соответственно.
-                           """)
+        self.ui.integrateTextEdit.setPlaceholderText("Введите подынтегральную ф-цию.\n" + "Информация о используемой системе обозначений" + self.placeHolder)
         self.ui.integrateButton.clicked.connect(self.on_integrateButton)
         self.ui.integrateButton.clicked.connect(self.on_reset)
         self.ui.integrateSaveFunc.clicked.connect(self.on_integrandInput)
@@ -71,8 +69,7 @@ class Widget(QWidget):
         self.ui.diffSymbolicButton.setEnabled(False)
 
 
-        self.ui.diffTextEdit.setPlaceholderText("""Введите дифференцируемую ф-цию.\nИнформация о используемой системе обозначений: \n\t- exp() -> показательная ф-ция с числом Эйлера в основании;\n\t- ** -> операция возведения в степень;\n\t- * / + - -> операции умножение, деление, сложение и вычитание соответственно.
-                   """)
+        self.ui.diffTextEdit.setPlaceholderText("Введите дифференцируемую ф-цию.\n" + "Информация о используемой системе обозначений" + self.placeHolder)
 
         self.minimusNumberOfValidRecors = 5
         self.diffTableInputLabel = QLabel(f"! В таблице должно быть не менее {self.minimusNumberOfValidRecors} записей с уникальными значениями независимой переменной.")
@@ -99,7 +96,7 @@ class Widget(QWidget):
         self.ui.removeColumn.clicked.connect(
             lambda: self.ui.diffTableWidget.removeColumn(self.ui.diffTableWidget.columnCount() - 1))
 
-        self.ui.diffSaveFuncInput.clicked.connect(self.on_diffFunctionInput)
+        self.ui.diffSaveFuncInput.clicked.connect(self.on_diff_symbolic_saveButton)
         self.ui.diffSaveTableInput.clicked.connect(self.on_diffTableSaveInput)
 
         self.ui.diffTableButton.clicked.connect(self.on_diffButton)
@@ -111,6 +108,7 @@ class Widget(QWidget):
     def __init_solverTab(self):
         self.ui.solver_output.setVisible(False)
         solver_methods = ["Метод дихотомии", "Метод хорд", "Метод Ньютона", "Метод секущих", "Гибридный метод Ньютона-половинного деления"]
+        NonlinearEquationSolver.met_dict(solver_methods)
 
 
         self.ui.solver_methodComboBox_1.addItems(solver_methods)
@@ -122,8 +120,15 @@ class Widget(QWidget):
         self.ui.splitter.setStretchFactor(2, 1)
 
         self.ui.solver_plainTextEdit_1.setPlainText("4 * x * log(x) ** 2 - 4 * sqrt(1 + x) + 5 = 0")
+        self.ui.solver_plainTextEdit_1.setReadOnly(True)
 
-        self.ui.solver_solve.setEnabled(False)
+        self.ui.solver_solveButton.setEnabled(False)
+        self.on_solver_resetButton()
+
+        # Сигналы и слоты
+        self.ui.solver_saveButton.clicked.connect(self.on_solver_saveButton)
+        self.ui.solver_solveButton.clicked.connect(self.on_solver_solveButton)
+        self.ui.solver_resetButton.clicked.connect(self.on_solver_resetButton)
 
     def __diffResetEvalPointConstraints(self):
         self.ui.diffEvalPoint.setMinimum(-100000)
@@ -197,7 +202,7 @@ class Widget(QWidget):
         self.__on_symbolicInput(latex_integral, NumericMethod.INTEGRATION)
 
 
-    def on_diffFunctionInput(self):
+    def on_diff_symbolic_saveButton(self):
         self.numeric_differentiation.M = self.ui.diffCloseness
         if self.ui.diffOrd1.isChecked():
             latex_derivative = "$$\\frac{d(f_x)}{dx}$$"
@@ -206,12 +211,7 @@ class Widget(QWidget):
 
         self.__on_symbolicInput(latex_derivative, NumericMethod.DIFFERENTIATION)
 
-
-
-
     # Обработка табличного ввода
-
-
     def __on_radioButton_clicked(self):
         self.__on_resetTable_clicked()
 
@@ -355,6 +355,20 @@ class Widget(QWidget):
         except:
             self.diffTableInputLabel.setText("Возникла ошибка при работе с файлом: " + file.name)
 
+    def __set_latex_output(self, s):
+        return f"""
+               <html>
+                   <head>
+                       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+                   </script>
+                   </head>
+                       <body>
+                           <p><mathjax style="font-size:1.5em">
+                           $${s}$$            
+                           </mathjax></p>
+                       </body>
+                   </html    
+           """
     # Бизнес логика
     def on_integrateButton(self):
 
@@ -383,21 +397,7 @@ class Widget(QWidget):
         else:
             res = self.numeric_differentiation.table_function(x0, order)
 
-        self.ui.diffOutput.setHtml(f"""
-                    <html>
-                        <head>
-                            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-                            </script>
-                        </head>
-                        <body>
-                            <p>
-                                <mathjax style="font-size:1.5em">
-                                    $$\\frac{{df}}{{dx}} = {round(res[0], 6)}; \ \\epsilon = {round(res[1], 6)}; \ g(h) = {res[2]}$$
-                                </mathjax>
-                            </p>
-                        </body>
-                    </html>""")
-
+        self.ui.diffOutput.setHtml(self.__set_latex_output(f"\\frac{{df}}{{dx}} = {round(res[0], 6)}; \ \\epsilon = {round(res[1], 6)}; \ g(h) = {res[2]})"))
 
     def on_reset(self):
         for field in [self.ui.trapRuleOutput, self.ui.simpRuleOutput, self.ui.newtonRuleOutput]:
@@ -408,28 +408,97 @@ class Widget(QWidget):
         self.ui.diffWebEngine.setHtml("")
 
 
-    def on_solveButton(self):
-
-        def run_method(met, solver):
-            match met:
-                case "Метод дихотомии":
-
-
-                case "Метод хорд":
-                    ...
-                case "Метод Ньютона":
-                    ...
-                case "Метод секущих":
-                    ...
-                case "Гибридный метод Ньютона-половинного деления":
-                    ...
-
-        if not len(self.ui.solver_plainTextEdit_1.text()) or not len(self.ui.solver_plainTextEdit_2.text()) or not len(self.ui.solver_plainTextEdit_3.text()):
-            self.ui.solver_solve.setEnabled(False)
+    def on_solver_saveButton(self):
+        if not len(self.ui.solver_plainTextEdit_2.toPlainText()) or not len(self.ui.solver_plainTextEdit_3.toPlainText()):
+            self.ui.solver_solveButton.setEnabled(False)
             return
 
-        mets = [self.ui.solver_methodComboBox_1.currentText(), self.ui.solver_methodComboBox_2.currentText(), self.ui.solver_methodComboBox_3.currentText()]
+        self.ui.solver_inputSaved.setVisible(True)
+        self.ui.solver_output.setVisible(False)
+
+        F = [self.ui.solver_plainTextEdit_1.toPlainText(), self.ui.solver_plainTextEdit_2.toPlainText(), self.ui.solver_plainTextEdit_3.toPlainText()]
+        A = [self.ui.solver_aSpinBox_1.value(), self.ui.solver_aSpinBox_2.value(), self.ui.solver_aSpinBox_3.value()]
+        B = [self.ui.solver_bSpinBox_1.value(), self.ui.solver_bSpinBox_2.value(), self.ui.solver_bSpinBox_3.value()]
+        E = [self.ui.solver_epsSpinBox_1.value(), self.ui.solver_epsSpinBox_2.value(), self.ui.solver_epsSpinBox_3.value()]
+        D = [self.ui.solver_deltaSpinBox_1.value(), self.ui.solver_deltaSpinBox_2.value(), self.ui.solver_deltaSpinBox_3.value()]
+
         flag = False
 
+        try:
+            for i in range(3):
+                expr = sympify((re.sub("=.*0", "", F[i])).strip())
+                if expr.has(smp.zoo) or expr.has(smp.nan):
+                    raise ValueError()
+                self.nonlinear_equation_solvers[i].f_x = expr
+                self.nonlinear_equation_solvers[i].a = A[i]
+                self.nonlinear_equation_solvers[i].b = B[i]
+                self.nonlinear_equation_solvers[i].eps = E[i]
+                self.nonlinear_equation_solvers[i].delta = D[i]
 
+            self.ui.solverWebEngine.setHtml(f"""
+                    <html>
+                        <head>
+                            <script type="text/javascript"
+                                src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+                            </script>
+                        </head>
+                        <body>
+                            <p>
+                                Обозначения: x — корень уравнения, t — время работы алгоритма, c — количество итераций. 
+                            </p>    
+                            <dl>
+                                <dt>- Уравнение 1</dt>
+                                <dd>$${latex(self.nonlinear_equation_solvers[0].f_x)} = 0$$</dd>
+                                <dt>- Уравнение 2🤺</dt>
+                                <dd>$${latex(self.nonlinear_equation_solvers[1].f_x)} = 0$$</dd>
+                                <dt>- Уравнение 3</dt>
+                                <dd>$${latex(self.nonlinear_equation_solvers[2].f_x)} = 0$$</dd>
+                            </dl>
+                        </body>
+                    </html> 
+                    """)
+            flag = True
 
+        except ValueError:
+            self.ui.solverWebEngine.setHtml("""
+            <html><body style="color:red;">
+            <p>Некорректные входные данные </p>
+            </body></html>
+            """)
+        finally:
+            self.ui.solver_solveButton.setEnabled(flag)
+
+    def on_solver_resetButton(self):
+        self.ui.solver_inputSaved.setVisible(True)
+        self.ui.solver_output.setVisible(False)
+
+        self.ui.solver_plainTextEdit_2.setPlainText("")
+        self.ui.solver_plainTextEdit_3.setPlainText("")
+
+        self.ui.solverWebEngine.setHtml(f"""
+            <html>
+                <head>
+                    <script type="text/javascript"
+                        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+                    </script>
+                </head>
+                <body style="color:gray;">
+                    <p>Информация о используемой системе обозначений:</p>
+                    <ul>
+                    {self.placeHolder.replace("\n\t", "</li><li>").replace("- ", "")} 
+                    </ul>  
+                </body>
+            </html> 
+            """)
+
+    def on_solver_solveButton(self):
+        self.ui.solver_inputSaved.setVisible(False)
+        self.ui.solver_output.setVisible(True)
+
+        # Если не введена ф-ция
+        M = [self.ui.solver_methodComboBox_1.currentText(), self.ui.solver_methodComboBox_2.currentText(), self.ui.solver_methodComboBox_3.currentText()]
+        S = [self.ui.solver_equationOutput_1, self.ui.solver_equationOutput_2, self.ui.solver_equationOutput_3]
+
+        for i in range(3):
+            s = self.nonlinear_equation_solvers[i].solve(M[i])
+            S[i].setHtml(self.__set_latex_output(f"x = {s[0]}; t = {s[1]}; c = {s[2]}"))
