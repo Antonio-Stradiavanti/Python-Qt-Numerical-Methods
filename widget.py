@@ -37,6 +37,8 @@ class Widget(QWidget):
         self.nonlinear_equation_solvers = [NonlinearEquationSolver(), NonlinearEquationSolver(), NonlinearEquationSolver()]
 
         self.placeHolder = "\n\t- exp() ➡️ показательная ф-ция с числом Эйлера в основании;\n\t- ** ➡️ операция возведения в степень;\n\t- * / + - ➡️ операции умножение, деление, сложение и вычитание соответственно."
+        # --- Настраиваем внешний вид приложения
+        #self.__load_css()
         # --- Конфигурация вкладок управления
 
         self.__init_integrateTab()
@@ -44,12 +46,7 @@ class Widget(QWidget):
         self.__init_solverTab()
 
         # --- Раскрашиваем элементы управления
-        #     """.format(
-        #         tab_padding="12px", button_color="#689D6A", bg_color="#FBF1C7", input_field_color="#EBDBB2",
-        #     border_color="#928374",
-        #         border_width="2px", text_color="#3C3836", selected_tab_border_color="#D65D0E"
-        #     )
-        # )
+
         # --- Связываем сигналы и слоты
         #self.ui.saveInputButton.clicked.connect(self.__handleSymbolicInput)
 
@@ -130,6 +127,31 @@ class Widget(QWidget):
         self.ui.solver_solveButton.clicked.connect(self.on_solver_solveButton)
         self.ui.solver_resetButton.clicked.connect(self.on_solver_resetButton)
 
+    def __load_css(self):
+        try:
+            with open("style.css", encoding="utf-8") as file:
+                css = file.read()
+            self.setStyleSheet(css
+                .replace("tab_padding", "12px")
+                .replace("border_width", "2px")
+                .replace("bg_color", "#FBF1C7")
+                .replace("button_color", "#689D6A")
+                .replace("text_color", "#3C3836")
+                .replace("input_field_color", "#EBDBB2")
+                .replace("border_color", "#928374")
+                .replace("selected_tab_border_color", "#D65D0E")
+           )
+            #     """.format(
+            #         tab_padding="12px", button_color="", bg_color="", input_field_color="#EBDBB2",
+            #     border_color="#928374",
+            #         border_width="2px", text_color="#3C3836", selected_tab_border_color="#D65D0E"
+            #     )
+            # )
+
+        except OSError:
+            print("Возникла ошибка при открытии файла")
+        except:
+            print("Возникла ошибка при работе с файлом")
     def __diffResetEvalPointConstraints(self):
         self.ui.diffEvalPoint.setMinimum(-100000)
         self.ui.diffEvalPoint.setMaximum(100000)
@@ -448,11 +470,11 @@ class Widget(QWidget):
                             </p>    
                             <dl>
                                 <dt>- Уравнение 1</dt>
-                                <dd>$${latex(self.nonlinear_equation_solvers[0].f_x)} = 0$$</dd>
-                                <dt>- Уравнение 2🤺</dt>
-                                <dd>$${latex(self.nonlinear_equation_solvers[1].f_x)} = 0$$</dd>
+                                <dd><mathjax style="font-size:1.5em">$${latex(self.nonlinear_equation_solvers[0].f_x)} = 0$$</mathjax></dd>
+                                <dt>- Уравнение 2</dt>
+                                <dd><mathjax style="font-size:1.5em">$${latex(self.nonlinear_equation_solvers[1].f_x)} = 0$$</mathjax></dd>
                                 <dt>- Уравнение 3</dt>
-                                <dd>$${latex(self.nonlinear_equation_solvers[2].f_x)} = 0$$</dd>
+                                <dd><mathjax style="font-size:1.5em">$${latex(self.nonlinear_equation_solvers[2].f_x)} = 0$$</mathjax></dd>
                             </dl>
                         </body>
                     </html> 

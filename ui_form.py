@@ -786,7 +786,7 @@ class Ui_Widget(object):
         self.solver_deltaSpinBox_1.setSizePolicy(sizePolicy18)
         self.solver_deltaSpinBox_1.setDecimals(6)
         self.solver_deltaSpinBox_1.setMinimum(0.000001000000000)
-        self.solver_deltaSpinBox_1.setMaximum(0.001000000000000)
+        self.solver_deltaSpinBox_1.setMaximum(0.010000000000000)
         self.solver_deltaSpinBox_1.setSingleStep(0.000001000000000)
 
         self.solver_deltaLayout_1.addWidget(self.solver_deltaSpinBox_1)
@@ -918,7 +918,7 @@ class Ui_Widget(object):
         self.solver_deltaSpinBox_2.setSizePolicy(sizePolicy18)
         self.solver_deltaSpinBox_2.setDecimals(6)
         self.solver_deltaSpinBox_2.setMinimum(0.000001000000000)
-        self.solver_deltaSpinBox_2.setMaximum(0.001000000000000)
+        self.solver_deltaSpinBox_2.setMaximum(0.010000000000000)
         self.solver_deltaSpinBox_2.setSingleStep(0.000001000000000)
 
         self.solver_deltaLayout_2.addWidget(self.solver_deltaSpinBox_2)
@@ -1049,7 +1049,7 @@ class Ui_Widget(object):
         self.solver_deltaSpinBox_3.setSizePolicy(sizePolicy18)
         self.solver_deltaSpinBox_3.setDecimals(6)
         self.solver_deltaSpinBox_3.setMinimum(0.000001000000000)
-        self.solver_deltaSpinBox_3.setMaximum(0.001000000000000)
+        self.solver_deltaSpinBox_3.setMaximum(0.010000000000000)
         self.solver_deltaSpinBox_3.setSingleStep(0.000001000000000)
 
         self.solver_deltaLayout_3.addWidget(self.solver_deltaSpinBox_3)

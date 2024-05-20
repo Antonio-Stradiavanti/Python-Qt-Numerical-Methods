@@ -7,4 +7,7 @@
         <file>export.svg</file>
         <file>import.svg</file>
     </qresource>
+    <qresource prefix="/style">
+        <file>style.css</file>
+    </qresource>
 </RCC>
