@@ -1,47 +1,115 @@
 QWidget {
- background: bg_color;
+ background: @bg;
  background-clip: content;
- border: 0px;
+ border: @border_width;
 } 
 QPushButton {
- background-color: button_color;
- color: text_color;
+ background-color: @btn;
+ color: @on_btn;
  border-radius: 24px;
 } 
 QPushButton:hover {
- background-color: #427B58;
- color: bg_color;
+ background-color: @on_btn;
+ color: @btn;
 } 
 QPushButton:disabled {
- background-color: input_field_color;
- color: text_color;
+ background-color: @field;
+ color: @border_color;
 } 
 QPlainTextEdit {
- background-color: input_field_color;
- color: text_color;
- placeholder-text-color: text_color;
- border: border_width solid border_color;
+ background-color: @field;
+ color: @text;
+ placeholder-text-color: @border_color;
+ border: @border_width solid @border_color;
 } 
 QLabel {
- color: {text_color};
+ color: @text;
 } 
 QTabWidget::pane {
- border-top: border_width solid border_color;
+ border-top: @border_width solid @border_color;
  margin-top: -2px;
 } 
 QTabBar::tab {
- background: bg_color;
- padding-left: tab_padding; padding-right: tab_padding; padding-bottom: 3px; padding-top: 3px;
- border-bottom: border_width solid border_color;
+ background: @bg;
+ padding-left: @tab_padding; padding-right: @tab_padding; padding-bottom: @padding; padding-top: @padding;
+ border-bottom: @border_width solid @border_color;
 } 
 QTabBar::tab:selected {
- background: input_field_color;
- border-bottom: {border_width} solid {selected_tab_border_color};
+ background: @field;
+ border-bottom: @border_width solid @selected_tab_stroke;
 } 
 QDoubleSpinBox {
- background: {input_field_color};
- border: border_width solid border_color;
-} 
-QGroupBox::title {
-   padding: 3 0 3 0; 
+   background: @bg; color: @text;
+   /*
+   margin-left: 2.5px; margin-right: 2.5px;
+   padding-left: 5px;
+   border-radius: 5px;
+   */
 }
+QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+   background: @btn;
+   width: 18px; height: 9px;
+   padding: 0 1px 0 0;
+}
+QDoubleSpinBox::up-button { 
+   image: url(:/icons/arrow-up.svg);
+   margin-top: @padding;
+   border-top-left-radius: @padding; border-top-right-radius: @padding;
+}
+QDoubleSpinBox::down-button {
+   image: url(:/icons/arrow-down.svg);
+   margin-bottom: @padding;
+   border-bottom-left-radius: @padding; border-bottom-right-radius: @padding;
+}
+QComboBox {
+   border-bottom: @border_width solid @border_color;
+}
+QComboBox::drop-down {
+   subcontrol-origin: padding;
+   subcontrol-position: center right;
+   background: @btn;
+   border-radius: @padding;
+   width: 18px; height: 18px;
+}
+QComboBox::down-arrow {
+   image: url(:/icons/arrow-down.svg);
+}
+QGroupBox {
+   margin: 24px 0 0 0;
+   border-top: @border_width solid @border_color;
+   border-right: none;
+   border-left: none;
+   border-bottom: none;
+   padding: @padding;
+}
+QGroupBox::title {
+   subcontrol-origin: margin;
+   subcontrol-position: top center;
+}
+QGroupBox#solver_equation_1, QGroupBox#solver_equation_2, QGroupBox#solver_equation_3 {
+   margin: 10px 0 0 0;
+   border: @border_width solid @border_color;
+}
+QWebEngineView {
+   background: @bg;
+}
+QScrollBar:vertical {
+   border: none;
+   width: @vertical_scroll_bar_height;
+   background: @bg;
+   margin: @vertical_scroll_bar_height 0 @vertical_scroll_bar_height 0;
+}
+QScrollBar::handle:vertical {
+   background: @field;
+   min-height: @vertical_scroll_bar_height;
+   border-radius: @vertical_scroll_bar_border_radius;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+   border: none;
+   background: none;
+   height: 0px;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+   background: none;
+}
+

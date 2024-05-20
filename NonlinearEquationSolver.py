@@ -1,5 +1,6 @@
 from NumericOperation import *
 import time
+import sympy as smp
 from sympy import diff, evalf
 class NonlinearEquationSolver(NumericOperation):
     def __init__(self):
@@ -16,6 +17,12 @@ class NonlinearEquationSolver(NumericOperation):
             met_keys = ["Метод дихотомии", "Метод хорд", "Метод Ньютона", "Метод секущих", "Гибридный метод Ньютона-половинного деления"]
         met_vals = [cls.dichotomy_method, cls.chord_method, cls.newton_method, cls.secant_method, cls.hybrid_method]
         cls.mets = dict(zip(met_keys, met_vals))
+
+    def __try_subs(self, c):
+        res = self.f_x.subs(self.x, c)
+        if res == smp.nan or res == smp.zoo:
+            raise ValueError(c)
+        return res
 
     def solve(self, met):
         return self.mets[met](self)
@@ -35,7 +42,7 @@ class NonlinearEquationSolver(NumericOperation):
                 break
 
             # Если f(a) * f(b) < 0, то b = c, иначе a = c;
-            if self.f_x.subs(self.x, self.a) * self.f_x.subs(self.x, c) < 0:
+            if self.__try_subs(self.a) * self.__try_subs(c) < 0:
                 self.b = c
             else:
                 self.a = c
@@ -51,13 +58,13 @@ class NonlinearEquationSolver(NumericOperation):
             count += 1
 
             # c = a - f(a) * (b - a) / (f(b) - f(a))
-            c = self.a - self.f_x.subs(self.x, self.a) * ((self.b - self.a) / (self.f_x.subs(self.x, self.b) - self.f_x.subs(self.x, self.a)))
+            c = self.a - self.__try_subs(self.a) * ((self.b - self.a) / (self.__try_subs(self.b) - self.__try_subs(self.a)))
 
-            if self.b - self.a < 2 * self.eps or abs(self.f_x.subs(self.x, c)) < 2 * self.delta:
+            if self.b - self.a < 2 * self.eps or abs(self.__try_subs(c)) < 2 * self.delta:
                 end = time.time()
                 break
 
-            if self.f_x.subs(self.x, self.a) * self.f_x.subs(self.x, c) < 0:
+            if self.__try_subs(self.a) * self.__try_subs(c) < 0:
                 self.b = c
             else:
                 self.a = c
@@ -72,8 +79,8 @@ class NonlinearEquationSolver(NumericOperation):
         while True:
             count += 1
             c_prev = c
-            c = c - self.f_x.subs(self.x, c) / diff(self.f_x, self.x).doit().subs(self.x, c).evalf(6)
-            if abs(c - c_prev) < self.eps or self.f_x.subs(self.x, c) < self.delta:
+            c = c - self.__try_subs(c) / diff(self.f_x, self.x).doit().subs(self.x, c).evalf(6)
+            if abs(c - c_prev) < self.eps or self.__try_subs(c) < self.delta:
                 end = time.time()
                 break
 
@@ -88,9 +95,9 @@ class NonlinearEquationSolver(NumericOperation):
         while True:
             count += 1
             c_prev = c
-            c = c_prev - self.f_x.subs(self.x, c_prev) * h / (self.f_x.subs(self.x, c_prev + h) - self.f_x.subs(self.x, c_prev))
+            c = c_prev - self.__try_subs(c_prev) * h / (self.__try_subs(c_prev + h) - self.__try_subs(c_prev))
             h = c_prev - c
-            if abs(c - c_prev) < self.eps or self.f_x.subs(self.x, c) < self.delta:
+            if abs(c - c_prev) < self.eps or self.__try_subs(c) < self.delta:
                 end = time.time()
                 break
 
@@ -107,23 +114,23 @@ class NonlinearEquationSolver(NumericOperation):
             # Если производная в точке c == 0, то применить метод дихотомии.
             # x_k = c_prev, ~x_k = c;
             if diff(self.f_x, self.x, 1).doit().subs(self.x, c).evalf() == 0:
-                if self.f_x.subs(self.x, self.a) * self.f_x.subs(self.x, c) < 0:
+                if self.__try_subs(self.a) * self.__try_subs(c) < 0:
                     self.b = c
                 else:
                     self.a = c
 
-                c = self.a - self.f_x.subs(self.x, self.a) * (self.b - self.a) / (self.f_x.subs(self.x, self.b) - self.f_x.subs(self.x, self.a))
+                c = self.a - self.__try_subs(self.a) * (self.b - self.a) / (self.__try_subs(self.b) - self.__try_subs(self.a))
             else:
                 c = c_prev
-                c = c_prev - self.f_x.subs(self.x, c_prev) / diff(self.f_x, self.x, 1).doit().subs(self.x, c).evalf()
+                c = c_prev - self.__try_subs(c_prev) / diff(self.f_x, self.x, 1).doit().subs(self.x, c).evalf()
 
-                if abs(self.f_x.subs(self.x, c)) < abs(self.f_x.subs(self.x, c_prev)):
+                if abs(self.__try_subs(c)) < abs(self.__try_subs(c_prev)):
                     c = c_prev
 
                 else:
                     c = 1 / 2 * (c_prev + c)
 
-            if abs(c - c_prev) < self.eps or self.f_x(self.x, c) < self.delta:
+            if abs(c - c_prev) < self.eps or self.__try_subs(c) < self.delta:
                 end = time.time()
                 break
 

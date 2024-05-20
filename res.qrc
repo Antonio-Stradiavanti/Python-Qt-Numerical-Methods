@@ -6,6 +6,8 @@
         <file>save.svg</file>
         <file>export.svg</file>
         <file>import.svg</file>
+        <file>arrow-down.svg</file>
+        <file>arrow-up.svg</file>
     </qresource>
     <qresource prefix="/style">
         <file>style.css</file>

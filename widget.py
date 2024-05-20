@@ -36,9 +36,42 @@ class Widget(QWidget):
         self.numeric_differentiation = NumericDifferentiation()
         self.nonlinear_equation_solvers = [NonlinearEquationSolver(), NonlinearEquationSolver(), NonlinearEquationSolver()]
 
+        self.colors = {
+            "@bg": "#FAFAEE",
+            "@btn": "#FFD7E6",
+            "@on_btn": "#8F4664",
+            "@field": "#E1E4D5",
+            "@border_color": "#586249",
+            "@selected_tab_stroke": "#A0D0CA",
+            "@text": "#1A1C16",
+
+            "@border_width": "2px",
+            "@padding": "3px",
+            "@tab_padding": "12px",
+            "@vertical_scroll_bar_height": "18px",
+            "@vertical_scroll_bar_border_radius": "9px",
+        }
+        self.headTag = """
+        <head>
+            <script type="text/javascript"
+                src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+            </script>
+            <style>
+                body {
+                    background-color: @bg;
+                    padding: 0.5em;
+                    color: @text;
+                    font-family: 'Times New Roman', Times, serif;
+                }
+            </style>
+        </head>
+        """
+        for i in self.colors.keys():
+            self.headTag = self.headTag.replace(i, self.colors[i])
+
         self.placeHolder = "\n\t- exp() ➡️ показательная ф-ция с числом Эйлера в основании;\n\t- ** ➡️ операция возведения в степень;\n\t- * / + - ➡️ операции умножение, деление, сложение и вычитание соответственно."
         # --- Настраиваем внешний вид приложения
-        #self.__load_css()
+        self.__load_css()
         # --- Конфигурация вкладок управления
 
         self.__init_integrateTab()
@@ -74,7 +107,8 @@ class Widget(QWidget):
         self.ui.diffTableWidget.setRowCount(2)
         self.diffTableInputFieldLabels = ["x", "y"]
 
-        self.__on_resetTable_clicked()
+        self.on_diff_table_resetButton_clicked()
+        self.on_diff_symbolic_resetButton_clicked()
 
         tableFunctionLayout = self.ui.tableFunction.layout()
         tableFunctionLayout.insertWidget(
@@ -88,7 +122,8 @@ class Widget(QWidget):
 
         self.ui.addColumn.clicked.connect(lambda: self.ui.diffTableWidget.insertColumn(self.ui.diffTableWidget.columnCount()))
 
-        self.ui.resetTable.clicked.connect(self.__on_resetTable_clicked)
+        self.ui.resetTable.clicked.connect(self.on_diff_table_resetButton_clicked)
+        self.ui.diff_symbolic_resetButton.clicked.connect(self.on_diff_symbolic_resetButton_clicked)
 
         self.ui.removeColumn.clicked.connect(
             lambda: self.ui.diffTableWidget.removeColumn(self.ui.diffTableWidget.columnCount() - 1))
@@ -119,7 +154,6 @@ class Widget(QWidget):
         self.ui.solver_plainTextEdit_1.setPlainText("4 * x * log(x) ** 2 - 4 * sqrt(1 + x) + 5 = 0")
         self.ui.solver_plainTextEdit_1.setReadOnly(True)
 
-        self.ui.solver_solveButton.setEnabled(False)
         self.on_solver_resetButton()
 
         # Сигналы и слоты
@@ -128,19 +162,17 @@ class Widget(QWidget):
         self.ui.solver_resetButton.clicked.connect(self.on_solver_resetButton)
 
     def __load_css(self):
+
+
+        css = None
         try:
             with open("style.css", encoding="utf-8") as file:
                 css = file.read()
-            self.setStyleSheet(css
-                .replace("tab_padding", "12px")
-                .replace("border_width", "2px")
-                .replace("bg_color", "#FBF1C7")
-                .replace("button_color", "#689D6A")
-                .replace("text_color", "#3C3836")
-                .replace("input_field_color", "#EBDBB2")
-                .replace("border_color", "#928374")
-                .replace("selected_tab_border_color", "#D65D0E")
-           )
+
+            for i in self.colors.keys():
+                css = css.replace(i, self.colors[i])
+
+            self.setStyleSheet(css)
             #     """.format(
             #         tab_padding="12px", button_color="", bg_color="", input_field_color="#EBDBB2",
             #     border_color="#928374",
@@ -186,10 +218,7 @@ class Widget(QWidget):
 
             web_engine.setHtml(f"""
             <html>
-                <head>
-                    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-                    </script>
-                </head>
+                {self.headTag}
                 <body>
                     <p>
                         <mathjax style="font-size:1.5em">
@@ -235,7 +264,7 @@ class Widget(QWidget):
 
     # Обработка табличного ввода
     def __on_radioButton_clicked(self):
-        self.__on_resetTable_clicked()
+        self.on_diff_table_resetButton_clicked()
 
         if self.ui.table.isChecked() :
             self.ui.tableFunction.setVisible(True)
@@ -272,7 +301,7 @@ class Widget(QWidget):
 
         try:
             if col_count < self.minimusNumberOfValidRecors:
-                if col_count == 0 : self.__on_resetTable_clicked()
+                if col_count == 0 : self.on_diff_table_resetButton_clicked()
                 else:
                     self.diffTableInputLabel.setText("Заданная сетка содержит недостаточное количество узлов")
                     raise ValueError
@@ -299,7 +328,22 @@ class Widget(QWidget):
             self.ui.diffTableButton.setEnabled(False)
             self.ui.diffTableExportData.setEnabled(False)
 
-    def __on_resetTable_clicked(self):
+    def on_diff_symbolic_resetButton_clicked(self):
+        self.ui.diffSymbolicButton.setEnabled(False)
+
+        self.ui.diffWebEngine.setHtml(f"""
+        <html>
+            {self.headTag}
+        </html>
+        """)
+
+        self.ui.diffOutput.setHtml(f"""
+               <html>
+                   {self.headTag}
+               </html>
+               """)
+
+    def on_diff_table_resetButton_clicked(self):
         self.__diffResetEvalPointConstraints()
 
         self.diffTableInputLabel.setText(f"! В таблице должно быть не менее {self.minimusNumberOfValidRecors} записей с уникальными значениями независимой переменной.")
@@ -328,7 +372,7 @@ class Widget(QWidget):
                 lx = self.diffTableInputFieldLabels[0]; ly = self.diffTableInputFieldLabels[1]
                 if len(fisrt_row.keys()) == 2 and lx in fisrt_row[lx] and ly in fisrt_row[ly]:
                     i = 0
-                    self.__on_resetTable_clicked()
+                    self.on_diff_table_resetButton_clicked()
                     for row in my_reader:
                         if i >= self.ui.diffTableWidget.columnCount():
                             self.ui.diffTableWidget.insertColumn(i)
@@ -378,18 +422,18 @@ class Widget(QWidget):
             self.diffTableInputLabel.setText("Возникла ошибка при работе с файлом: " + file.name)
 
     def __set_latex_output(self, s):
+        outs = ""
+        for i in s.split("; "):
+            outs += "$$" + i + "$$ "
         return f"""
                <html>
-                   <head>
-                       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-                   </script>
-                   </head>
-                       <body>
+                    {self.headTag}
+                   <body>
                            <p><mathjax style="font-size:1.5em">
-                           $${s}$$            
+                           $${outs}$$
                            </mathjax></p>
-                       </body>
-                   </html    
+                   </body>
+               </html    
            """
     # Бизнес логика
     def on_integrateButton(self):
@@ -459,11 +503,7 @@ class Widget(QWidget):
 
             self.ui.solverWebEngine.setHtml(f"""
                     <html>
-                        <head>
-                            <script type="text/javascript"
-                                src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-                            </script>
-                        </head>
+                        {self.headTag}
                         <body>
                             <p>
                                 Обозначения: x — корень уравнения, t — время работы алгоритма, c — количество итераций. 
@@ -494,17 +534,15 @@ class Widget(QWidget):
         self.ui.solver_inputSaved.setVisible(True)
         self.ui.solver_output.setVisible(False)
 
+        self.ui.solver_solveButton.setEnabled(False)
+
         self.ui.solver_plainTextEdit_2.setPlainText("")
         self.ui.solver_plainTextEdit_3.setPlainText("")
 
         self.ui.solverWebEngine.setHtml(f"""
             <html>
-                <head>
-                    <script type="text/javascript"
-                        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-                    </script>
-                </head>
-                <body style="color:gray;">
+                {self.headTag}
+                <body style="color:#586249;">
                     <p>Информация о используемой системе обозначений:</p>
                     <ul>
                     {self.placeHolder.replace("\n\t", "</li><li>").replace("- ", "")} 
@@ -522,5 +560,15 @@ class Widget(QWidget):
         S = [self.ui.solver_equationOutput_1, self.ui.solver_equationOutput_2, self.ui.solver_equationOutput_3]
 
         for i in range(3):
-            s = self.nonlinear_equation_solvers[i].solve(M[i])
-            S[i].setHtml(self.__set_latex_output(f"x = {s[0]}; t = {s[1]}; c = {s[2]}"))
+            try:
+                s = self.nonlinear_equation_solvers[i].solve(M[i])
+                S[i].setHtml(self.__set_latex_output(f"x = {round(s[0], 6)}; t = {round(s[1], 6)}; c = {round(s[2], 6)}"))
+            except ValueError as e:
+                S[i].setHtml(f"""
+                <html>
+                    {self.headTag}
+                    <body>
+                        <p>Функция f(x) не определена в точке x = {str(e)}</p>
+                    </body>
+                </html>
+                """)
